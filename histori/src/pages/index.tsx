@@ -1,11 +1,12 @@
-import { randomInt } from "crypto";
+import SideBar from "@/components/SideBar";
+import Timeline from "@/components/Timeline";
 import React, { useEffect } from "react";
 
 const Home: React.FC = () => {
   const fetchDataAndVisualize = async () => {
     const colorScale = d3.scaleSequentialSqrt(d3.interpolateYlOrRd);
 
-    const getVal = (feat: any) => 50000 / Math.max(1e5, 300);
+    const getVal = (feat: any) => 5000 / Math.max(1e5, 300);
 
     fetch("/bc_100.geojson")
       .then((res) => res.json())
@@ -14,12 +15,13 @@ const Home: React.FC = () => {
         colorScale.domain([0, maxVal]);
 
         const world = Globe()
+          .width(1200)
           .globeImageUrl(
             "//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
           )
-          .backgroundImageUrl(
-            "//unpkg.com/three-globe/example/img/night-sky.png"
-          )
+          // .backgroundImageUrl(
+          //   "//unpkg.com/three-globe/example/img/night-sky.png"
+          // )
           .lineHoverPrecision(0)
           .polygonsData(countries.features)
           .polygonAltitude(0.05)
@@ -43,9 +45,7 @@ const Home: React.FC = () => {
           .onPolygonClick((d) => {
             console.log("Clicked on", d.properties.NAME);
           })
-          .polygonsTransitionDuration(300)(
-          document.getElementById("globeViz")
-        );
+          .polygonsTransitionDuration(300)(document.getElementById("globeViz"));
       });
   };
   useEffect(() => {
@@ -63,14 +63,21 @@ const Home: React.FC = () => {
       d3Script.onload = globeScript.onload = fetchDataAndVisualize;
     };
 
-    
-
     loadScripts();
   }, []);
 
-  return(
-    <div>
-       <div id="globeViz" style={{ width: "100%", height: "50px" }}>hello world</div>
+  return (
+    <div className="p-8">
+      <div className="relative z-10">
+        <Timeline />
+      </div>
+      <div className="flex">
+        <div id="globeviz" className="basis-3/5"></div>
+
+        {/* <div className="basis-2/5 mt-12">
+          <SideBar />
+        </div> */}
+      </div>
     </div>
   );
 };
