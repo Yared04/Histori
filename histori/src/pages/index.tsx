@@ -13,17 +13,15 @@ const Home: React.FC = () => {
   const fetchDataAndVisualize = async (geojson: string) => {
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
    
-    fetch(`/${geojson}`)
+    fetch(geojson)
     .then(async (res) => {
-      return res.json();
-      // const jsonData = await res.json();
-      // console.log('Received data:', jsonData);
-      // return jsonData.geoJson;
+      // return res.json();
+      const jsonData = await res.json();
+      return jsonData.geoJson;
     })
-      // .then((geojson: any) => {
-
-      //   // return JSON.parse(geojson);
-      //   })
+      .then((geojson: any) => {
+        return JSON.parse(geojson);
+        })
       .then((countries: any) => {
         const world = Globe()
           .width(950)
@@ -123,12 +121,15 @@ const Home: React.FC = () => {
           : availableyears[closestYearIdx - 1];
 
       if (scriptLoaded) {
-        // fetchDataAndVisualize('sampleresponse.json')
-        displayYear < 0 && availableyears.indexOf(displayYear) !== -1
-          ? fetchDataAndVisualize(`geojson/world_bc${displayYear * -1}.geojson`)
-          : availableyears.indexOf(displayYear) !== -1
-          ? fetchDataAndVisualize(`geojson/world_${displayYear}.geojson`)
-          : fetchDataAndVisualize(`geojson/places.geojson`);
+        const [year, time] = selectedYear.split(" ");
+        const displayYear =
+          time === "BC" ? -parseInt(year, 10) : parseInt(year, 10);
+        fetchDataAndVisualize(`https://histori.onrender.com/api/map?period=${displayYear}`)
+        // displayYear < 0 && availableyears.indexOf(displayYear) !== -1
+        //   ? fetchDataAndVisualize(`geojson/world_bc${displayYear * -1}.geojson`)
+        //   : availableyears.indexOf(displayYear) !== -1
+        //   ? fetchDataAndVisualize(`geojson/world_${displayYear}.geojson`)
+        //   : fetchDataAndVisualize(`geojson/places.geojson`);
       }
     }, 500);
     return () => clearTimeout(fetchAfterDelay);
