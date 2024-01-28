@@ -3,24 +3,36 @@ import Timeline from "@/components/Timeline";
 import React, { useContext, useEffect, useState } from "react";
 import { YearContext, EventsContext } from "./_app";
 import * as d3 from "d3";
+import * as THREE from "three"; // Import the THREE namespace
 
 const Home: React.FC = () => {
-  const { selectedYear, setSelectedYear } = useContext(YearContext);
-  const { events, setEvents } = useContext(EventsContext);
+  const { selectedYear } = useContext(YearContext);
+  const { events } = useContext(EventsContext);
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
   const fetchDataAndVisualize = async (geojson: string) => {
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
+   
     fetch(`/${geojson}`)
-      .then((res) => res.json())
+    .then(async (res) => {
+      return res.json();
+      // const jsonData = await res.json();
+      // console.log('Received data:', jsonData);
+      // return jsonData.geoJson;
+    })
+      // .then((geojson: any) => {
+
+      //   // return JSON.parse(geojson);
+      //   })
       .then((countries: any) => {
         const world = Globe()
           .width(950)
           .height(600)
-          .globeImageUrl(
-            "//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-          )
+          .globeImageUrl("/earth3.jpg")
+          .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+
+          .showGraticules(true)
+          .atmosphereAltitude("0.2")
           .backgroundImageUrl(
             "//unpkg.com/three-globe/example/img/night-sky.png"
           )
@@ -28,7 +40,7 @@ const Home: React.FC = () => {
           .polygonsData(countries.features)
           .polygonAltitude((d: any) => 0.0) // Set a base altitude for all polygons
           .polygonCapColor((d: any) => {
-            return "rgba(0, 0, 0, 0)"
+            return "rgba(0, 0, 0, 0)";
             // if (d === world.hoverD) {
             //   // Different color for the selected (hovered) country
             //   return "green";
@@ -45,11 +57,11 @@ const Home: React.FC = () => {
                    `
           )
           .onPolygonHover((hoverD: any) => {
-            world.polygonAltitude((d: any) => (d === hoverD ? 0.05 : 0.00)); // Elevate on hover
+            world.polygonAltitude((d: any) => (d === hoverD ? 0.05 : 0.0)); // Elevate on hover
           })
           .onPolygonClick((selectedD: any) => {
             // Update state
-            
+
             //fetch events from backend
             fetch(`/api/events?country=${selectedD.properties.NAME}`)
               .then((res) => res.json())
@@ -59,6 +71,14 @@ const Home: React.FC = () => {
             // Additional logic for handling click event, if needed
           })
           .polygonsTransitionDuration(300)(document.getElementById("globeViz"));
+
+          const globeMaterial = world.globeMaterial();
+          globeMaterial.bumpScale = 50;
+          new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-water.png', texture => {
+            globeMaterial.specularMap = texture;
+            globeMaterial.specular = new THREE.Color('grey');
+            globeMaterial.shininess = 15;
+          });
       });
   };
 
@@ -103,6 +123,7 @@ const Home: React.FC = () => {
           : availableyears[closestYearIdx - 1];
 
       if (scriptLoaded) {
+        // fetchDataAndVisualize('sampleresponse.json')
         displayYear < 0 && availableyears.indexOf(displayYear) !== -1
           ? fetchDataAndVisualize(`geojson/world_bc${displayYear * -1}.geojson`)
           : availableyears.indexOf(displayYear) !== -1
