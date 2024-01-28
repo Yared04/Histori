@@ -1,9 +1,20 @@
 import React from "react";
 import EventItem from "./EventItem";
-import { title } from "process";
 
-const SideBar = () => {
-  const events = [
+
+interface SideBarProps {
+  events: [
+    {
+      title: string;
+      description: string;
+      image: string;
+    }
+  
+  ];
+}
+
+const SideBar = ({ events }: SideBarProps) => {
+  const event = [
     {
       title: "Adwa",
       descrption:
@@ -12,27 +23,28 @@ const SideBar = () => {
     },
   ];
   return (
-    <div className="bg-gray-300 bg-opacity-50 w-full h-screen p-8 flex flex-col gap-6 rounded-xl">
-    <div>
-        <input type="text" name="" id="" placeholder="Search" className="p-4 rounded-full w-full h-10 border-none shadow-md"/>
-
-    </div>
-      <div className=" flex flex-col gap-3">
-        <EventItem
-          title={events[0].title}
-          description={events[0].descrption}
-          image={events[0].image}
+    <div className="bg-gray-300 bg-opacity-50 w-full  p-8 flex flex-col gap-6 rounded-xl">
+      <div>
+        <input
+          type="text"
+          name=""
+          id=""
+          placeholder="Search"
+          className="p-4 rounded-full w-full h-10 border-none shadow-md"
         />
-        <EventItem
-          title={events[0].title}
-          description={events[0].descrption}
-          image={events[0].image}
-        />
-        <EventItem
-          title={events[0].title}
-          description={events[0].descrption}
-          image={events[0].image}
-        />
+      </div>
+      <div
+        className="min-h-96 max-h-[28rem] overflow-y-scroll no-scrollbar"
+      >
+        {events.map((event, idx: number) => (
+          <div key={idx} className="flex flex-col gap-3 ">
+            <EventItem
+              title={event.title}
+              description={event.description}
+              image={event.image}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
