@@ -12,22 +12,24 @@ const Home: React.FC = () => {
 
   const fetchDataAndVisualize = async (geojson: string) => {
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-   
+
     fetch(geojson)
-    .then(async (res) => {
-      // return res.json();
-      const jsonData = await res.json();
-      return jsonData.geoJson;
-    })
-      .then((geojson: any) => {
-        return JSON.parse(geojson);
-        })
+      .then((res) => {
+        return res.json();
+        // const jsonData = await res.json();
+        // return jsonData.geoJson;
+      })
+      // .then((geojson: any) => {
+      //   return JSON.parse(geojson);
+      //   })
       .then((countries: any) => {
         const world = Globe()
           .width(950)
           .height(600)
           .globeImageUrl("/earth3.jpg")
-          .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+          .bumpImageUrl(
+            "//unpkg.com/three-globe/example/img/earth-topology.png"
+          )
 
           .showGraticules(true)
           .atmosphereAltitude("0.2")
@@ -70,13 +72,16 @@ const Home: React.FC = () => {
           })
           .polygonsTransitionDuration(300)(document.getElementById("globeViz"));
 
-          const globeMaterial = world.globeMaterial();
-          globeMaterial.bumpScale = 50;
-          new THREE.TextureLoader().load('//unpkg.com/three-globe/example/img/earth-water.png', texture => {
+        const globeMaterial = world.globeMaterial();
+        globeMaterial.bumpScale = 50;
+        new THREE.TextureLoader().load(
+          "//unpkg.com/three-globe/example/img/earth-water.png",
+          (texture) => {
             globeMaterial.specularMap = texture;
-            globeMaterial.specular = new THREE.Color('grey');
+            globeMaterial.specular = new THREE.Color("grey");
             globeMaterial.shininess = 15;
-          });
+          }
+        );
       });
   };
 
@@ -121,15 +126,15 @@ const Home: React.FC = () => {
           : availableyears[closestYearIdx - 1];
 
       if (scriptLoaded) {
-        const [year, time] = selectedYear.split(" ");
-        const displayYear =
-          time === "BC" ? -parseInt(year, 10) : parseInt(year, 10);
-        fetchDataAndVisualize(`https://histori.onrender.com/api/map?period=${displayYear}`)
-        // displayYear < 0 && availableyears.indexOf(displayYear) !== -1
-        //   ? fetchDataAndVisualize(`geojson/world_bc${displayYear * -1}.geojson`)
-        //   : availableyears.indexOf(displayYear) !== -1
-        //   ? fetchDataAndVisualize(`geojson/world_${displayYear}.geojson`)
-        //   : fetchDataAndVisualize(`geojson/places.geojson`);
+        // const [year, time] = selectedYear.split(" ");
+        // const displayYear =
+        //   time === "BC" ? -parseInt(year, 10) : parseInt(year, 10);
+        // fetchDataAndVisualize(`https://histori.onrender.com/api/map?period=${displayYear}`)
+        displayYear < 0 && availableyears.indexOf(displayYear) !== -1
+          ? fetchDataAndVisualize(`geojson/world_bc${displayYear * -1}.geojson`)
+          : availableyears.indexOf(displayYear) !== -1
+          ? fetchDataAndVisualize(`geojson/world_${displayYear}.geojson`)
+          : fetchDataAndVisualize(`geojson/places.geojson`);
       }
     }, 500);
     return () => clearTimeout(fetchAfterDelay);
