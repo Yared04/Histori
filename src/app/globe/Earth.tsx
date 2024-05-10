@@ -63,19 +63,23 @@ const Earth = () => {
           polygonsData={data}
           animateIn={true}
           polygonAltitude={({ properties: d }: any) =>
-            d?.NAME === selectedCountry && d?.NAME !== null ? 0.01 : 0.0015
+            d?.NAME === selectedCountry && d?.NAME !== null ? 0.0015 : 0.0015
           }
           polygonStrokeColor={({ properties: d }: any) =>
             d?.NAME === selectedCountry && d?.NAME !== null
-              ? "rgba(0, 50, 255, 0.7)"
-              : "rgba(255, 255, 255, 0.2)"
+              ? "rgba(0, 50, 255, 0)"
+              : "rgba(255, 255, 255, 0.4)"
           }
           polygonCapColor={({ properties: d }: any) =>
             d?.NAME === selectedCountry && d?.NAME !== null
               ? "rgba(0, 50, 255, 0.3)"
               : "rgba(255, 255, 255, 0)"
           }
-          polygonSideColor={({ properties: d }: any) => "rgba(50, 0, 255, 0)"}
+          polygonSideColor={({ properties: d }: any) =>
+            d?.NAME === selectedCountry && d?.NAME !== null
+              ? "rgba(0, 50, 255, 0.3)"
+              : "rgba(50, 0, 255, 0)"
+          }
           polygonLabel={({ properties: d }: any) =>
             d?.NAME !== null ? `<b>${d?.NAME} </b> <br />` : ""
           }
