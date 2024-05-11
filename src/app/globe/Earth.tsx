@@ -35,7 +35,7 @@ const Earth = () => {
             `https://histori.onrender.com/api/map?period=${year}`
           );
           if (!response.ok) {
-            throw new Error("Failed to fetch GeoJSON data");
+            return;
           }
           const data = await response.json(); // Parse response body as JSON
           setData(data.features);
