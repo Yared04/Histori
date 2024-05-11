@@ -17,11 +17,11 @@ const Earth = () => {
   if (!context) {
     throw new Error("Timeline must be used within a TimelineProvider");
   }
-  const { selectedYear } = context;
+  const { selectedYear, isYearTransitionPending, startYearTransition } =
+    context;
   const [data, setData] = useState([]);
   const [country, setCountry] = useState(undefined);
   const [selectedCountry, setSelectedCountry] = useState();
-  const [isYearTransitionPending, startYearTransition] = useTransition();
 
   useEffect(() => {
     async function getMap() {
@@ -52,11 +52,6 @@ const Earth = () => {
       className="relative"
       style={{ position: "relative", width: "100%", height: "100vh" }}
     >
-      <div className="absolute bottom-16 right-8 z-50">
-        {" "}
-        {isYearTransitionPending && <Loading />}
-      </div>
-
       {typeof window !== "undefined" && (
         <Globe
           ref={globeEl}
@@ -72,7 +67,7 @@ const Earth = () => {
           }
           polygonCapColor={({ properties: d }: any) =>
             d?.NAME === selectedCountry && d?.NAME !== null
-              ? "rgba(0, 50, 255, 0.3)"
+              ? "rgba(0, 50, 255, 0.6)"
               : "rgba(255, 255, 255, 0)"
           }
           polygonSideColor={({ properties: d }: any) =>

@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import Tooltip from "../ToolTip";
 import TimelineContext from "./TimelineContext";
+import Loading from "@/app/components/Loading";
 
 const TimeControl = () => {
   const context = useContext(TimelineContext);
@@ -11,7 +12,13 @@ const TimeControl = () => {
     throw new Error("Timeline must be used within a TimelineProvider");
   }
 
-  const { selectedYear, sliderPosition, updateYearAndSlider } = context;
+  const {
+    selectedYear,
+    sliderPosition,
+    updateYearAndSlider,
+    isYearTransitionPending,
+    startYearTransition,
+  } = context;
 
   const years = [];
   for (let year = -3000; year <= 2500; year += 100) {
@@ -71,6 +78,8 @@ const TimeControl = () => {
           <AiOutlinePlus />
         </div>
       </div>
+
+      {isYearTransitionPending && <Loading />}
     </div>
   );
 };
