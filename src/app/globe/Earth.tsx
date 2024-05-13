@@ -32,7 +32,7 @@ const Earth = () => {
             (selectedYear.includes("BC") ? -1 : 1);
 
           const response = await fetch(
-            `https://histori.onrender.com/api/map?period=${year}`
+            `https://histori.onrender.com/api/map/temp?period=${year}`
           );
           if (!response.ok) {
             return;
