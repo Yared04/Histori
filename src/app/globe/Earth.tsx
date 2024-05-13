@@ -17,10 +17,9 @@ const Earth = () => {
   if (!context) {
     throw new Error("Timeline must be used within a TimelineProvider");
   }
-  const { selectedYear, isYearTransitionPending, startYearTransition } =
+  const { setCountry, selectedYear, isYearTransitionPending, startYearTransition } =
     context;
   const [data, setData] = useState([]);
-  const [country, setCountry] = useState(undefined);
   const [selectedCountry, setSelectedCountry] = useState();
 
   useEffect(() => {
@@ -38,7 +37,7 @@ const Earth = () => {
             return;
           }
           const data = await response.json(); // Parse response body as JSON
-          setData(data.features);
+          setData(data.map.features);
         } catch (error) {
           console.error("Error fetching GeoJSON data:", error);
         }
@@ -50,7 +49,7 @@ const Earth = () => {
   return (
     <div
       className="relative"
-      style={{ position: "relative", width: "100%", height: "100vh" }}
+      style={{ position: "relative", width: "70%", }}
     >
       {typeof window !== "undefined" && (
         <Globe
@@ -86,6 +85,7 @@ const Earth = () => {
           }}
           globeImageUrl="/earthmap.jpeg"
           bumpImageUrl="/earthbump.jpeg"
+          backgroundColor="#00000000"
         />
       )}
     </div>

@@ -17,23 +17,31 @@
 }
 
 body {
-  background-image: url('/stars.png');
+  background-image: url("/stars.png");
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 }
 
 .slider-thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
- 
+
   height: 8px;
   width: 8px;
 
   transform: rotate(45deg);
   background: white;
 }
-
 

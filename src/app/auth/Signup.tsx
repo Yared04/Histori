@@ -82,7 +82,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
               <Field
                 name="fullName"
                 type="text"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Full Name"
               />
               <ErrorMessage
@@ -93,7 +93,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
               <Field
                 name="username"
                 type="text"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Username"
               />
               <ErrorMessage
@@ -104,7 +104,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
               <Field
                 name="email"
                 type="email"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Email"
               />
               <ErrorMessage
@@ -116,7 +116,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
               <Field
                 name="password"
                 type="password"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Password"
               />
               <ErrorMessage
@@ -127,7 +127,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
               <Field
                 name="confirmPassword"
                 type="password"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Confirm Password"
               />
               <ErrorMessage

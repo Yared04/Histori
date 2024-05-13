@@ -26,7 +26,7 @@ const Login = ({ setShowLogin }: LoginProps) => {
       setCurUser(user);
       window.localStorage.setItem("token", token);
       console.log(curUser);
-      router.push("/home");
+      router.push("/globe");
     } catch (error) {
       setErrors({ login: "Invalid email or password" });
     } finally {
@@ -53,7 +53,7 @@ const Login = ({ setShowLogin }: LoginProps) => {
               <Field
                 name="email"
                 type="email"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Email"
               />
               <ErrorMessage
@@ -65,7 +65,7 @@ const Login = ({ setShowLogin }: LoginProps) => {
               <Field
                 name="password"
                 type="password"
-                className="bg-transparent h-12 w-64 rounded-md pl-3 outline outline-1 focus:outline-blue-600"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Password"
               />
               <ErrorMessage

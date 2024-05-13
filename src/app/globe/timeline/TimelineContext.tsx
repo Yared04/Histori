@@ -14,6 +14,8 @@ interface TimelineContextType {
   updateYearAndSlider: (newPosition: number) => void;
   isYearTransitionPending: boolean;
   startYearTransition: React.TransitionStartFunction;
+  country: string;
+  setCountry: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const TimelineContext = createContext<TimelineContextType | undefined>(
@@ -30,6 +32,7 @@ export const TimelineProvider: FunctionComponent<TimelineProviderProps> = ({
   const [selectedYear, setSelectedYear] = useState<string>("2024 AD");
   const [sliderPosition, setSliderPosition] = useState<number>(0);
   const [isYearTransitionPending, startYearTransition] = useTransition();
+  const [country, setCountry] = useState<string>("");
 
   useEffect(() => {
     updateYear("2024 AD");
@@ -68,6 +71,8 @@ export const TimelineProvider: FunctionComponent<TimelineProviderProps> = ({
     updateYearAndSlider,
     isYearTransitionPending,
     startYearTransition,
+    country,
+    setCountry,
   };
 
   return (

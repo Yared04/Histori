@@ -19,7 +19,7 @@ const EventItem = ({ image, title, description }: EventItemProps) => {
     "bg-pink-500",
   ];
   return (
-    <Card className="overflow-hidden max-h-28 min-h-24 flex gap-5 bg-white shadow-xl">
+    <div className="block overflow-hidden max-h-32 text-white max-w-[32rem] p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
       {/* <Image
         className="rounded-l-lg"
         src={image}
@@ -31,7 +31,7 @@ const EventItem = ({ image, title, description }: EventItemProps) => {
         <div className="flex justify-between">
           <h1 className="text-xl font-bold">{title}</h1>
 
-          <div className="pr-2 pt-2 flex gap-1">
+          <div className="pr-2 flex gap-1">
             <Tag name="war" color={colors[0]} />
             <Tag name="battles" color={colors[1]} />
           </div>
@@ -39,7 +39,7 @@ const EventItem = ({ image, title, description }: EventItemProps) => {
 
         <p className="my-1 text-sm ">{description}</p>
       </div>
-    </Card>
+    </div>
   );
 };
 
