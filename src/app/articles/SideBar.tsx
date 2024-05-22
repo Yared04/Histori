@@ -1,9 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import EventItem from "./EventItem";
-import { Modal, FloatingLabel } from "flowbite-react";
 import Image from "next/image";
 import { Event } from "../types/Event";
+import Tag from "./Tag";
+import { Banner, Button, Dropdown, Modal } from "flowbite-react";
+import { HiX } from "react-icons/hi";
+import axios from "axios";
+import { content } from "flowbite-react/tailwind";
 
 interface SideBarProps {
   events: Event[];
@@ -12,29 +16,53 @@ interface SideBarProps {
 }
 
 const SideBar = ({ events, openModals, setOpenModals }: SideBarProps) => {
-  const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
   const [reason, setReason] = useState("");
 
-  const handleEventClick = (index: number) => {
-    const updatedModals = [...openModals];
-    updatedModals[index] = true; // Open the modal for the clicked event
-    setOpenModals(updatedModals);
+  const colors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-blue-500",
+    "bg-indigo-500",
+    "bg-purple-500",
+    "bg-pink-500",
+  ];
+
+
+  const handleOpenDetial = (idx: number) => {
+    const newOpenModals = [...openModals];
+    newOpenModals[idx] = true;
+    setOpenModals(newOpenModals);
   };
 
-  const handleModalClose = (index: number) => {
-    const updatedModals = [...openModals];
-    updatedModals[index] = false; // Close the modal for the clicked event
-    setOpenModals(updatedModals);
+  const handleCloseDetail = (idx: number) => {
+    const newOpenModals = [...openModals];
+    newOpenModals[idx] = false;
+    setOpenModals(newOpenModals);
   };
 
-  const handleReportSubmit = () => {
+  const handleReportSubmit = async (id: string) => {
     console.log(reason);
+    //send request to the backend
+    try{
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reports`,
+        {
+          reason: reason,
+          contentId: id,
+          type: "History"
+        }
+      );
+    }catch(error){
+      console.log(error);
+    }   
+    setReason("");
     setOpenModal2(false);
   };
 
   return (
-    <div className="bg-gray-800 opacity-75 w-full  p-8 flex flex-col gap-6 rounded-lg">
+    <div className="bg-gray-800 opacity-70  pt-8 px-8 flex flex-col gap-6 rounded-lg w-[46vw] h-[100vh]">
       <form className="flex items-center max-w-lg">
         <label htmlFor="simple-search" className="sr-only">
           Search
@@ -71,11 +99,12 @@ const SideBar = ({ events, openModals, setOpenModals }: SideBarProps) => {
         </button>
       </form>
 
-      <div className="min-h-96 max-h-[28rem] w-[30rem] overflow-y-scroll no-scrollbar flex flex-col gap-3">
-        {events?.map((event, idx: number) => (
-          <>
+      <div className=" flex flex-col gap-3">
+        {events?.map((event, idx: number) =>
+          !openModals[idx] ? (
+        
             <div
-              onClick={() => handleEventClick(idx)}
+              onClick={() => handleOpenDetial(idx)}
               key={idx}
               className="flex flex-col gap-3 cursor-pointer"
             >
@@ -85,67 +114,96 @@ const SideBar = ({ events, openModals, setOpenModals }: SideBarProps) => {
                 image={event.image}
               />
             </div>
-            <Modal
-              className="scroll-auto no-scrollbar"
-              show={openModals[idx]}
-              onClose={() => handleModalClose(idx)}
-            >
-              <Modal.Header className="p-5">{event.title}</Modal.Header>
-              <Modal.Body className="p-5 border border-t-gray-200 no-scrollbar">
-                <div className="space-y-6">
-                  <div className="">
-                    {event.image && (
-                      <Image
-                        src={event.image}
-                        alt="Picture of the article"
-                        width={100}
-                        height={100}
-                      />
-                    )}
+          ) : (
+            <>
+              <div className="flex gap-2">
+                <div className="basis-[70%]">
+                  <h1 className="p-2 text-xl text-white">{event.title}</h1>
+                  <div className="p-2 no-scrollbar">
+                    <div className="space-y-6">
+                      <div className="">
+                        {event.image && (
+                          <Image
+                            src={event.image}
+                            alt="Picture of the article"
+                            width={100}
+                            height={100}
+                          />
+                        )}
+                      </div>
+                      <p className="text-sm leading-relaxed max-h-[32rem] text-white overflow-y-scroll no-scrollbar">
+                        {event.content}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                    {event.content}
-                  </p>
                 </div>
-              </Modal.Body>
-              <Modal.Footer className="p-5  flex gap-2 justify-around">
-                {!openModal2 ? (
-                  <button
-                    className="flex gap-1 text-red-400"
-                    onClick={() => {
-                      setOpenModal2(!openModal2);
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 -2 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
+                <div className="basis-[30%] flex flex-col justify-between">
+                  <div>
+                    <div className="flex justify-end">
+                      {/* <Banner.CollapseButton
+                      color="gray"
+                      className="border-0 bg-transparent text-white hover:text-gray-300 focus:outline-none focus:ring-0 focus:border-transparent"
+                      onClickCapture={() => handleCloseDetail(idx)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M3 3v1.5M3 21v-6m0 0 2.77-.693a9 9 0 0 1 6.208.682l.108.054a9 9 0 0 0 6.086.71l3.114-.732a48.524 48.524 0 0 1-.005-10.499l-3.11.732a9 9 0 0 1-6.085-.711l-.108-.054a9 9 0 0 0-6.208-.682L3 4.5M3 15V4.5"
-                      />
-                    </svg>
-                    Report this article
-                  </button>
-                ) : (
-                  <button
-                    className="text-green-600"
-                    onClick={() => {
-                      setOpenModal2(!openModal2);
-                    }}
-                  >
-                    Go back
-                  </button>
-                )}
-                {openModal2 && (
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-medium text-gray-900 dark:text-white">
-                      Describe your reason for reporting this article
+                      <HiX className="h-4 w-4" />
+                    </Banner.CollapseButton> */}
+                      <Dropdown
+                        label=""
+                        size="sm"
+                        dismissOnClick={false}
+                        renderTrigger={() => (
+                          <span className="cursor-pointer hover:text-gray-600 hover:shadow-lg focus:ring-0">
+                            <svg
+                              className="w-5 h-5"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="white"
+                              viewBox="0 0 16 3"
+                            >
+                              <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                            </svg>
+                          </span>
+                        )}
+                      >
+                        <Dropdown.Item
+                          onClick={() => {
+                            setOpenModal2(true);
+                          }}
+                          className="text-red-500 hover:text-red-600  dark:text-red-500 dark:hover:text-red-400"
+                        >
+                          Report Article
+                        </Dropdown.Item>
+                      </Dropdown>
+                    </div>
+                    <div className="shadow-lg bg-blue-700 rounded-md p-2 max-h-24 mt-20">
+                      <p className="text-center font-semibold text-white mb-1">
+                        Categories
+                      </p>
+                      <div className="flex gap-2">
+                        {event.categories.map((tag, idx) => (
+                          <Tag name={tag} color={colors[idx]} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end z-10">
+                    <Button  onClick={() => handleCloseDetail(idx)} color="blue">
+                      Finish
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="mx-5 flex gap-9 justify-end">
+                <Modal
+                  show={openModal2}
+                  onClose={() => setOpenModal2(false)}
+                  title="Report Article"
+                  size="lg"
+                >
+                  <Modal.Header>Report Article</Modal.Header>
+                  <Modal.Body>
+                    <h3 className="font-medium mb-4 dark:text-white">
+                      Describe your reason for reporting this article:
                     </h3>
                     <div>
                       <textarea
@@ -157,20 +215,18 @@ const SideBar = ({ events, openModals, setOpenModals }: SideBarProps) => {
                         required
                       />
                     </div>
-                    <div>
-                      <button
-                        onClick={handleReportSubmit}
-                        className="w-full p-3 bg-green-600 text-white rounded-md"
-                      >
-                        Report
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </Modal.Footer>
-            </Modal>
-          </>
-        ))}
+                  </Modal.Body>
+                  <button
+                    onClick={() => handleReportSubmit(event._id)}
+                    className="mx-auto mb-5 py-3 px-6 bg-blue-700 text-white rounded-md"
+                  >
+                    Report
+                  </button>
+                </Modal>
+              </div>
+            </>
+          )
+        )}
       </div>
     </div>
   );

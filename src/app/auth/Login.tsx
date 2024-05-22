@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { userContext } from "@/app/auth/UserContext";
 import { useRouter } from "next/navigation";
+import { Spinner } from "flowbite-react";
 
 interface LoginProps {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,7 +14,10 @@ const Login = ({ setShowLogin }: LoginProps) => {
   const { curUser, setCurUser } = useContext(userContext);
   const router = useRouter();
 
-  const handleSubmit = async (values: { email: any; password: any; }, { setSubmitting, setErrors }: any) => {
+  const handleSubmit = async (
+    values: { email: any; password: any },
+    { setSubmitting, setFieldError }: any
+  ) => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/users/login`,
@@ -23,12 +27,11 @@ const Login = ({ setShowLogin }: LoginProps) => {
         }
       );
       const { user, token } = response.data;
-      setCurUser(user);
+      setCurUser!!(user);
       window.localStorage.setItem("token", token);
-      console.log(curUser);
       router.push("/globe");
     } catch (error) {
-      setErrors({ login: "Invalid email or password" });
+      setFieldError("general", "Invalid email or password");
     } finally {
       setSubmitting(false);
     }
@@ -43,11 +46,11 @@ const Login = ({ setShowLogin }: LoginProps) => {
     <div className="shadow-md p-12 rounded-md text-white">
       <p className="text-primary text-4xl font-bold mb-10">Log In</p>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", password: "", general: "" }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, errors }) => (
           <Form name="login">
             <div className="flex flex-col gap-3.5">
               <Field
@@ -73,18 +76,24 @@ const Login = ({ setShowLogin }: LoginProps) => {
                 component="p"
                 className="text-red-500"
               />
-              <ErrorMessage
-                name="login"
-                component="p"
-                className="text-red-500"
-              />
+
+              {errors.general && (
+                <p className="text-red-500">{errors.general}</p>
+              )}
 
               <button
                 type="submit"
                 className="self-center shadow-md border-blue-600 border mb-2 py-2 px-3 rounded-lg"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Logging in..." : "Login"}
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" aria-label="Logging in..." />
+                    <span className="ms-2">Logging in...</span>
+                  </>
+                ) : (
+                  "Login"
+                )}
               </button>
             </div>
           </Form>

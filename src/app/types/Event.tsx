@@ -2,7 +2,8 @@ export type Event = {
     title: string;
     content: string;
     image: string;
-    startYear: number;
-    endYear: number;
+    start_year: number;
+    end_year: number;
     categories: string[];
+    _id: string;
   };

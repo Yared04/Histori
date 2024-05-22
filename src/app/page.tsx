@@ -2,9 +2,18 @@
 import Login from "@/app/auth/Login";
 import Signup from "@/app/auth/Signup";
 import React, { useState } from "react";
+import { Button } from "flowbite-react";
+import { FaLongArrowAltRight } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 const index = () => {
+  const router = useRouter();
   const [showlogin, setShowLogin] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+
+  const handleClick = () => {
+    router.push("/globe");
+  };
   return (
     <div className="bg-[url('/Earth0230.png')] h-screen w-screen bg-contain bg-no-repeat bg-center py-10 px-16 flex justify-between">
       <div className=" flex flex-col justify-around">
@@ -19,13 +28,34 @@ const index = () => {
           </h3>
         </div>
       </div>
-      <div className="self-center">
-        {showlogin ? (
-          <Login setShowLogin={setShowLogin} />
-          ):(
+
+      <div className="flex flex-col justify-between">
+        <button
+          onClick={() => setShowAuth(!showAuth)}
+          className="text-white font-normal text-xl leading-normal text-end"
+        >
+          {showAuth ? "Continue as a guest" : "Login"}
+        </button>
+        {showAuth ? (
+          showlogin ? (
+            <Login setShowLogin={setShowLogin} />
+          ) : (
             <Signup setShowLogin={setShowLogin} />
-          )}
-        
+          )
+        ) : (
+          <Button
+            style={{ marginRight: "5rem" }}
+            size="xl"
+            gradientDuoTone="purpleToBlue"
+            onClick={() => handleClick()}
+          >
+            Explore the Past
+            <FaLongArrowAltRight
+              style={{ alignSelf: "center", marginLeft: "0.7rem" }}
+            />
+          </Button>
+        )}
+        <div></div>
       </div>
     </div>
   );

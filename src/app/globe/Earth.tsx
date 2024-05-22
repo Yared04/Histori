@@ -17,8 +17,12 @@ const Earth = () => {
   if (!context) {
     throw new Error("Timeline must be used within a TimelineProvider");
   }
-  const { setCountry, selectedYear, isYearTransitionPending, startYearTransition } =
-    context;
+  const {
+    setCountry,
+    selectedYear,
+    isYearTransitionPending,
+    startYearTransition,
+  } = context;
   const [data, setData] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState();
 
@@ -47,10 +51,7 @@ const Earth = () => {
   }, [selectedYear]);
 
   return (
-    <div
-      className="relative"
-      style={{ position: "relative", width: "70%", }}
-    >
+    <div className="relative" >
       {typeof window !== "undefined" && (
         <Globe
           ref={globeEl}
@@ -86,7 +87,8 @@ const Earth = () => {
           globeImageUrl="/earthmap.jpeg"
           bumpImageUrl="/earthbump.jpeg"
           backgroundColor="#00000000"
-        />
+          
+        ></Globe>
       )}
     </div>
   );

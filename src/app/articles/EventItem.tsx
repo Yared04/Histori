@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
 import Image from "next/image";
-import Tag from "./Tag";
 import { Card } from "flowbite-react";
+import { Dropdown } from "flowbite-react";
+
 interface EventItemProps {
   title: string;
   description: string;
@@ -9,17 +11,10 @@ interface EventItemProps {
 }
 
 const EventItem = ({ image, title, description }: EventItemProps) => {
-  const colors = [
-    "bg-red-500",
-    "bg-green-500",
-    "bg-yellow-500",
-    "bg-blue-500",
-    "bg-indigo-500",
-    "bg-purple-500",
-    "bg-pink-500",
-  ];
+
+  const handleDelete = () => {};
   return (
-    <div className="block overflow-hidden max-h-32 text-white max-w-[32rem] p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+    <div className="block overflow-hidden max-h-96  border-b-2 text-white max-w-fill p-2 rounded">
       {/* <Image
         className="rounded-l-lg"
         src={image}
@@ -29,15 +24,30 @@ const EventItem = ({ image, title, description }: EventItemProps) => {
       /> */}
       <div className="">
         <div className="flex justify-between">
-          <h1 className="text-xl font-bold">{title}</h1>
-
-          <div className="pr-2 flex gap-1">
-            <Tag name="war" color={colors[0]} />
-            <Tag name="battles" color={colors[1]} />
-          </div>
+          <h1 className="text-xl font-bold mb-3">{title}</h1>
+          <Dropdown
+            label=""
+            size="sm"
+            dismissOnClick={false}
+            renderTrigger={() => (
+              <span>
+                <svg
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 16 3"
+                >
+                  <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                </svg>
+              </span>
+            )}
+          >
+            <Dropdown.Item onClick={handleDelete}>Dashboard</Dropdown.Item>
+          </Dropdown>
         </div>
 
-        <p className="my-1 text-sm ">{description}</p>
+        <p className="my-1 text-xs line-clamp-3">{description}</p>
       </div>
     </div>
   );
