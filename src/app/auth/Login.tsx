@@ -11,7 +11,7 @@ interface LoginProps {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Login = ({ setShowLogin }: LoginProps) => {
+const Login = () => {
   const { curUser, setCurUser } = useContext(userContext);
   const router = useRouter();
 
@@ -97,7 +97,7 @@ const Login = ({ setShowLogin }: LoginProps) => {
       </Formik>
       <p className="text-sm text-center">
         Don&apos;t have an account?{" "}
-        <button className="text-blue-600" onClick={() => setShowLogin(false)}>
+        <button className="text-blue-600" onClick={() => {router.push("/signup")}}>
           Register
         </button>
       </p>
