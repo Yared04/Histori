@@ -30,4 +30,24 @@ describe("Login Page", () => {
     // Assert that error message is displayed
     cy.contains("Invalid login credentials").should("be.visible");
   });
+
+  it("should display validation errors for empty fields", () => {
+    cy.visit("/login");
+
+    cy.get('button[type="submit"]').click();
+
+    // Assert that validation errors are displayed
+    cy.contains("Email is required").should("be.visible");
+    cy.contains("Password is required").should("be.visible");
+  });
+
+  it("should display validation error for invalid email format", () => {
+    cy.visit("/login");
+
+    cy.get('input[name="email"]').type("invalidemail");
+    cy.get('button[type="submit"]').click();
+
+    // Assert that validation error for email is displayed
+    cy.contains("Invalid email").should("be.visible");
+  });
 });

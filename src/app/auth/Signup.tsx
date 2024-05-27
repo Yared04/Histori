@@ -35,7 +35,6 @@ const Signup = () => {
       const { user, token } = response.data;
       setCurUser!!(user);
       window.localStorage.setItem("token", token);
-      console.log(curUser);
       router.push("/globe");
     } catch (error: any) {
       setFieldError("general", error.response.data.message);

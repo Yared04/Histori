@@ -15,7 +15,7 @@ describe('Home Page', () => {
       }).as('getEvents');
   
       // Visit the home page
-      cy.visit('/home');
+      cy.visit('/globe');
     });
   
     it('should fetch and display events correctly', () => {
