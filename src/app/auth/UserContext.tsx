@@ -1,4 +1,5 @@
-import { createContext, useState } from "react";
+import { createContext, SetStateAction, useEffect, useState } from "react";
+import {jwtDecode} from "jwt-decode";
 
 interface UserContextType {
   curUser: any;
@@ -13,11 +14,34 @@ interface UserContextProviderProps {
   children: React.ReactNode;
 }
 
+interface MyJwtPayload {
+  _id: string;
+  email: string; // Add username here
+  iat: number;
+  exp: number;
+  role: string;
+}
+
+
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [curUser, setCurUser] = useState(null);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode<MyJwtPayload>(token);
+      // Check if token is expired
+      const isExpired = (decoded.exp as number) * 1000 < Date.now();
+      if (!isExpired) {
+        setCurUser({email: decoded.email, role: decoded.role} as any); // Add 'as any' to bypass type checking
+      } else {
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
+
   return (
-    <userContext.Provider value={{ curUser, setCurUser }}>
+    <userContext.Provider value={{ curUser, setCurUser}}>
       {children}
     </userContext.Provider>
   );

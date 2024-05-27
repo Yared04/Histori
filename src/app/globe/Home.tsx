@@ -7,14 +7,17 @@ import Timeline from "./timeline/TimeSlider";
 import SideBar from "../articles/SideBar";
 import TimelineContext from "./timeline/TimelineContext";
 import { Event } from "../types/Event";
-import { Avatar } from "flowbite-react";
+import { Avatar, Dropdown } from "flowbite-react";
 import { userContext } from "../auth/UserContext";
+import { useRouter } from "next/navigation";
 
 const Home = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [openModals, setOpenModals] = useState<boolean[]>([]);
   const context = useContext(TimelineContext);
-  const { curUser } = useContext(userContext);
+  const { curUser, setCurUser } = useContext(userContext);
+  const router = useRouter();
+
 
   if (!context) {
     throw new Error("Timeline must be used within a TimelineProvider");
@@ -34,13 +37,18 @@ const Home = () => {
     fetchEvents();
   }, [selectedYear, country]);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setCurUser!(null);
+  };
+
   return (
     <div className="relative">
       <div style={{ marginLeft: "-25%", marginTop: "-0.5%" }}>
         {/* Adjust the marginLeft value to move the Earth component to the left */}
         <Earth />
       </div>
-      <div className="absolute right-0 top-0 bg-gray-800 opacity-70  pt-8 px-8 rounded-lg w-[46vw] h-[100vh]">
+      <div className="absolute right-0 top-0 bg-zinc-800 pt-8 px-8 rounded-lg w-[46vw] h-[100vh]">
         <SideBar
           openModals={openModals}
           setOpenModals={setOpenModals}
@@ -59,13 +67,40 @@ const Home = () => {
           </div> */}
         </div>
       </div>
-      {curUser && (
-        <div className="absolute top-7 left-5">
-          <Avatar
-            placeholderInitials={curUser?.email.charAt(0).toUpperCase()}
-            rounded
-          />
+      {curUser ? (
+        <div
+          onClick={() => {}}
+          className="cursor-pointer absolute top-7 left-5"
+        >
+          <Dropdown
+            label=""
+            size="sm"
+            dismissOnClick={false}
+            renderTrigger={() => (
+              <span>
+                <Avatar
+                  placeholderInitials={curUser?.email?.charAt(0).toUpperCase()}
+                  rounded
+                />
+              </span>
+            )}
+          >
+            <Dropdown.Item className="" onClick={() => {}}>
+              Profile
+            </Dropdown.Item>
+            <Dropdown.Item className="text-red-600" onClick={handleLogout}>
+              Logout
+            </Dropdown.Item>
+          </Dropdown>
         </div>
+      ): (
+        <button
+            onClick={() => {router.push("/")}}
+            className="text-white font-normal cursor-pointer absolute top-7 left-5 text-xl"
+          >
+            {" "}
+            Login
+          </button>
       )}
     </div>
   );
