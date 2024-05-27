@@ -6,11 +6,7 @@ import { userContext } from "@/app/auth/UserContext";
 import { useRouter } from "next/navigation";
 import { Spinner } from "flowbite-react";
 
-interface SignUpProps {
-  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Signup = ({ setShowLogin }: SignUpProps) => {
+const Signup = () => {
   const { curUser, setCurUser } = useContext(userContext);
   const router = useRouter();
 
@@ -162,7 +158,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
       </Formik>
       <p className="text-sm text-center">
         Already have an account?{" "}
-        <button className="text-blue-600" onClick={() => setShowLogin(true)}>
+        <button className="text-blue-600" onClick={() => router.push("/login")}>
           Login
         </button>
       </p>

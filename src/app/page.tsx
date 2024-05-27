@@ -1,7 +1,13 @@
-import React from "react";
-import Landing from "./components/Landing";
+"use client";
+import React, { ReactNode } from "react";
+import Landing from "./components/LandingLayout";
+import ExploreButton from "./components/ExploreButton";
 const index = () => {
-  return <Landing />;
+  return (
+    <Landing>
+      <ExploreButton />
+    </Landing>
+  );
 };
 
 export default index;

@@ -4,6 +4,8 @@ import {jwtDecode} from "jwt-decode";
 interface UserContextType {
   curUser: any;
   setCurUser: React.Dispatch<React.SetStateAction<any>>;
+  showLogin: boolean;
+  setShowLogin: React.Dispatch<SetStateAction<boolean>>;
 }
 export const userContext = createContext<Partial<UserContextType>>({
   curUser: null,
@@ -25,6 +27,7 @@ interface MyJwtPayload {
 
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [curUser, setCurUser] = useState(null);
+  const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -41,7 +44,7 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   }, []);
 
   return (
-    <userContext.Provider value={{ curUser, setCurUser}}>
+    <userContext.Provider value={{ curUser, setCurUser, showLogin, setShowLogin}}>
       {children}
     </userContext.Provider>
   );
