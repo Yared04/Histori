@@ -43,6 +43,20 @@ export const UserContextProvider = ({ children }: UserContextProviderProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decoded = jwtDecode<MyJwtPayload>(token);
+      // Check if token is expired
+      const isExpired = (decoded.exp as number) * 1000 < Date.now();
+      if (!isExpired) {
+        setCurUser({email: decoded.email, role: decoded.role} as any); // Add 'as any' to bypass type checking
+      } else {
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
+
   return (
     <userContext.Provider value={{ curUser, setCurUser, showLogin, setShowLogin}}>
       {children}
