@@ -30,12 +30,23 @@ const Landing = () => {
       </div>
 
       <div className="flex flex-col justify-between">
-        <button
-          onClick={() => setShowAuth(!showAuth)}
-          className="text-white font-normal text-xl leading-normal text-end"
-        >
-          {showAuth ? "Continue as a guest" : "Login"}
-        </button>
+        {!showAuth ? (
+          <button
+            onClick={() => setShowAuth(!showAuth)}
+            className="text-white font-normal text-xl leading-normal text-end"
+          >
+            {" "}
+            Login
+          </button>
+        ) : (
+          <button
+            onClick={handleClick}
+            className="text-white font-normal text-xl leading-normal text-end"
+          >
+            Continue as a guest
+          </button>
+        )}
+
         {showAuth ? (
           showlogin ? (
             <Login setShowLogin={setShowLogin} />
@@ -47,7 +58,7 @@ const Landing = () => {
             style={{ marginRight: "5rem" }}
             size="xl"
             gradientDuoTone="purpleToBlue"
-            onClick={() => handleClick()}
+            onClick={handleClick}
           >
             Explore the Past
             <FaLongArrowAltRight

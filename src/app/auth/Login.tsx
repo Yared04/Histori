@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { userContext } from "@/app/auth/UserContext";
 import { useRouter } from "next/navigation";
 import { Spinner } from "flowbite-react";
+import { BiSolidHide, BiSolidShow } from "react-icons/bi";
 
 interface LoginProps {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,8 +31,8 @@ const Login = ({ setShowLogin }: LoginProps) => {
       setCurUser!!(user);
       window.localStorage.setItem("token", token);
       router.push("/globe");
-    } catch (error) {
-      setFieldError("general", "Invalid email or password");
+    } catch (error: any) {
+      setFieldError("general", error.response.data.message);
     } finally {
       setSubmitting(false);
     }
@@ -65,12 +66,7 @@ const Login = ({ setShowLogin }: LoginProps) => {
                 className="text-red-500"
               />
 
-              <Field
-                name="password"
-                type="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Password"
-              />
+              <Field name="password" component={PasswordInput} />
               <ErrorMessage
                 name="password"
                 component="p"
@@ -105,6 +101,27 @@ const Login = ({ setShowLogin }: LoginProps) => {
           Register
         </button>
       </p>
+    </div>
+  );
+};
+
+const PasswordInput = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  return (
+    <div className="relative">
+      <Field
+        name="password"
+        type={showPassword ? "text" : "password"}
+        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+        placeholder="Password"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="absolute top-1/2 right-2 transform -translate-y-1/2"
+      >
+        {showPassword ? <BiSolidHide color="black" /> : <BiSolidShow color="black" />}
+      </button>
     </div>
   );
 };
