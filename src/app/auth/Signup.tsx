@@ -21,7 +21,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
       email: any;
       password: any;
     },
-    { setSubmitting, setErrors }: any
+    { setSubmitting, setFieldErrors }: any
   ) => {
     try {
       const response = await axios.post(
@@ -32,15 +32,16 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
           username: values.username,
           email: values.email,
           password: values.password,
+          role: "user",
         }
       );
       const { user, token } = response.data;
-      setCurUser(user);
+      setCurUser!!(user);
       window.localStorage.setItem("token", token);
       console.log(curUser);
-      router.push("/home");
+      router.push("/globe");
     } catch (error) {
-      setErrors({ Signup: "Invalid email or password" });
+      setFieldErrors("general", "Invalid email or password");
     } finally {
       setSubmitting(false);
     }
@@ -67,11 +68,12 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
           password: "",
           confirmPassword: "",
           profilePic: "",
+          general: "",
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, errors }) => (
           <Form name="Signup">
             <div className="flex flex-col gap-3.5">
               <Field
@@ -135,11 +137,9 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
                 component="p"
                 className="text-red-500"
               />
-              <ErrorMessage
-                name="Signup"
-                component="p"
-                className="text-red-500"
-              />
+              {errors.general && (
+                <p className="text-red-500">{errors.general}</p>
+              )}
 
               <button
                 type="submit"

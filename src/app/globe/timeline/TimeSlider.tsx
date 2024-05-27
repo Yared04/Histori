@@ -27,8 +27,8 @@ const Timeline = () => {
   };
 
   return (
-    <div className="flex w-full justify-start items-center">
-      <div className="relative h-4 w-[40%] mx-4 flex flex-col justify-center space-y-2">
+    <div className="flex w-full justify-center items-center">
+      <div className="relative h-4 w-[100%] ml-4 flex flex-col justify-center space-y-2">
         <input
           type="range"
           min="0"
