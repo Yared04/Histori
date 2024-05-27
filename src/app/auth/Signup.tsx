@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { userContext } from "@/app/auth/UserContext";
 import { useRouter } from "next/navigation";
+import { Spinner } from "flowbite-react";
 
 interface SignUpProps {
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,7 +22,7 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
       email: any;
       password: any;
     },
-    { setSubmitting, setFieldErrors }: any
+    { setSubmitting, setFieldError }: any
   ) => {
     try {
       const response = await axios.post(
@@ -40,8 +41,8 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
       window.localStorage.setItem("token", token);
       console.log(curUser);
       router.push("/globe");
-    } catch (error) {
-      setFieldErrors("general", "Invalid email or password");
+    } catch (error: any) {
+      setFieldError("general", error.response.data.message);
     } finally {
       setSubmitting(false);
     }
@@ -146,7 +147,14 @@ const Signup = ({ setShowLogin }: SignUpProps) => {
                 className="self-center shadow-md border-blue-600 border mb-2 py-2 px-3 rounded-lg"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "..." : "Signup"}
+                {isSubmitting ? (
+                  <>
+                    <Spinner size="sm" aria-label="Signing up..." />
+                    <span className="ms-2">Signup...</span>
+                  </>
+                ) : (
+                  "Signup"
+                )}
               </button>
             </div>
           </Form>
