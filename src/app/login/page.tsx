@@ -4,7 +4,7 @@ import Login from "../auth/Login";
 import Landing from "../components/LandingLayout";
 import { userContext } from "../auth/UserContext";
 
-const page = () => {
+const LoginPage = () => {
   const context = useContext(userContext);
   const { setShowLogin } = context;
   useEffect(() => {
@@ -13,4 +13,4 @@ const page = () => {
   return <Landing children={<Login />} />;
 };
 
-export default page;
+export default LoginPage;
