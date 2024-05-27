@@ -10,7 +10,11 @@ const LoginPage = () => {
   useEffect(() => {
     setShowLogin!(false);
   }, []);
-  return <Landing children={<Login />} />;
+  return (
+    <Landing>
+      <Login />
+    </Landing>
+  );
 };
 
 export default LoginPage;
