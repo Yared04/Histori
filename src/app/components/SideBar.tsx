@@ -1,14 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import EventItem from "./ArticleItem";
-import Image from "next/image";
+import EventItem from "../articles/ArticleItem";
 import { Event } from "../types/Event";
-import Tag from "./Tag";
-import { Banner, Button, Dropdown, Modal } from "flowbite-react";
-import { HiX } from "react-icons/hi";
-import axios from "axios";
-import { content } from "flowbite-react/tailwind";
-import ArticleDetail from "./ArticleDetail";
+import ArticleDetail from "../articles/ArticleDetail";
 
 interface SideBarProps {
   events: Event[];
@@ -17,38 +11,38 @@ interface SideBarProps {
 }
 
 const SideBar = ({ events, openModals, setOpenModals }: SideBarProps) => {
-//  const events = [
-//     {
-//       title: "The First World War",
-//       content:
-//         "The First World War was a global war originating in Europe that lasted from 28 July 1914 to 11 November 1918.",
-//       image: "",
-//       start_year: 1914,
-//       end_year: 1918,
-//       categories: ["war"],
-//       _id: "1",
-//     },
-//     {
-//       title: "The Second World War",
-//       content:
-//         "The Second World War was a global war that lasted from 1939 to 1945.",
-//       image: "",
-//       start_year: 1939,
-//       end_year: 1945,
-//       categories: ["war"],
-//       _id: "2",
-//     },
-//     {
-//       title: "The Cold War",
-//       content:
-//         "The Cold War was a period of geopolitical tension between the Soviet Union and the United States and their respective allies.",
-//       image: "",
-//       start_year: 1947,
-//       end_year: 1991,
-//       categories: ["war"],
-//       _id: "3",
-//     },
-//   ];
+  //  const events = [
+  //     {
+  //       title: "The First World War",
+  //       content:
+  //         "The First World War was a global war originating in Europe that lasted from 28 July 1914 to 11 November 1918.",
+  //       image: "",
+  //       start_year: 1914,
+  //       end_year: 1918,
+  //       categories: ["war"],
+  //       _id: "1",
+  //     },
+  //     {
+  //       title: "The Second World War",
+  //       content:
+  //         "The Second World War was a global war that lasted from 1939 to 1945.",
+  //       image: "",
+  //       start_year: 1939,
+  //       end_year: 1945,
+  //       categories: ["war"],
+  //       _id: "2",
+  //     },
+  //     {
+  //       title: "The Cold War",
+  //       content:
+  //         "The Cold War was a period of geopolitical tension between the Soviet Union and the United States and their respective allies.",
+  //       image: "",
+  //       start_year: 1947,
+  //       end_year: 1991,
+  //       categories: ["war"],
+  //       _id: "3",
+  //     },
+  //   ];
 
   return (
     <div className="flex flex-col gap-6">
@@ -91,7 +85,7 @@ const SideBar = ({ events, openModals, setOpenModals }: SideBarProps) => {
       <div className=" flex flex-col gap-3">
         {events?.map((event, idx: number) =>
           !openModals[idx] ? (
-            <div key={idx} >
+            <div key={idx}>
               <EventItem
                 title={event.title}
                 description={event.content}
