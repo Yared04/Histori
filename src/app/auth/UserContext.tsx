@@ -18,7 +18,7 @@ interface UserContextProviderProps {
 
 interface MyJwtPayload {
   _id: string;
-  email: string; // Add username here
+  email: string; 
   iat: number;
   exp: number;
   role: string;
@@ -28,34 +28,6 @@ interface MyJwtPayload {
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [curUser, setCurUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode<MyJwtPayload>(token);
-      // Check if token is expired
-      const isExpired = (decoded.exp as number) * 1000 < Date.now();
-      if (!isExpired) {
-        setCurUser({email: decoded.email, role: decoded.role} as any); // Add 'as any' to bypass type checking
-      } else {
-        localStorage.removeItem("token");
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode<MyJwtPayload>(token);
-      // Check if token is expired
-      const isExpired = (decoded.exp as number) * 1000 < Date.now();
-      if (!isExpired) {
-        setCurUser({email: decoded.email, role: decoded.role} as any); // Add 'as any' to bypass type checking
-      } else {
-        localStorage.removeItem("token");
-      }
-    }
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
