@@ -49,9 +49,11 @@ const Earth = () => {
     }
     getMap();
   }, [selectedYear]);
-
+  if (typeof window === "undefined") {
+    return null; // Return null during server-side rendering
+  }
   return (
-    <div className="relative" >
+    <div className="relative">
       {typeof window !== "undefined" && (
         <Globe
           ref={globeEl}
@@ -87,7 +89,6 @@ const Earth = () => {
           globeImageUrl="/earthmap.jpeg"
           bumpImageUrl="/earthbump.jpeg"
           backgroundColor="#00000000"
-          
         ></Globe>
       )}
     </div>
