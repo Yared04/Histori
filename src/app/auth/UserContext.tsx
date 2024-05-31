@@ -18,7 +18,7 @@ interface UserContextProviderProps {
 
 interface MyJwtPayload {
   _id: string;
-  email: string; // Add username here
+  email: string; 
   iat: number;
   exp: number;
   role: string;

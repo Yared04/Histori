@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Button, Modal, Dropdown } from "flowbite-react";
-import Tag from "./Tag";
+import Tag from "../components/Tag";
 import { Event } from "@/app/types/Event";
 import axios from "axios";
 
@@ -107,7 +107,14 @@ const ArticleDetail = ({
                 </span>
               )}
             >
-              <Dropdown.Item className="text-red-600" onClick={()=>{setOpenModal2(true)}}>Report Article</Dropdown.Item>
+              <Dropdown.Item
+                className="text-red-600"
+                onClick={() => {
+                  setOpenModal2(true);
+                }}
+              >
+                Report Article
+              </Dropdown.Item>
             </Dropdown>
           </div>
           <div className="basis-11/12 flex flex-col justify-between">
@@ -122,7 +129,7 @@ const ArticleDetail = ({
               </div>
             </div>
             <div className="flex justify-end z-10">
-              <Button  onClick={() => handleCloseDetail(idx)} color="blue">
+              <Button onClick={() => handleCloseDetail(idx)} color="blue">
                 Finish
               </Button>
             </div>
