@@ -11,6 +11,7 @@ interface ArticleDetailProps {
   setOpenModals: (openModals: boolean[]) => void;
   startYear: number;
   endYear: number;
+  idx: number;
 }
 
 const ArticleDetail = ({
@@ -19,6 +20,7 @@ const ArticleDetail = ({
   setOpenModals,
   startYear,
   endYear,
+  idx
 }: ArticleDetailProps) => {
   const [openModal2, setOpenModal2] = useState(false);
   const [reason, setReason] = useState("");
@@ -33,7 +35,6 @@ const ArticleDetail = ({
     "bg-pink-500",
   ];
 
-  const idx = openModals.findIndex((modal) => modal);
 
   const handleCloseDetail = (idx: number) => {
     const newOpenModals = [...openModals];
@@ -118,11 +119,11 @@ const ArticleDetail = ({
             </Dropdown>
           </div>
           <div className="basis-11/12 flex flex-col justify-between">
-            <div className="shadow-lg bg-blue-700 rounded-md p-2 max-h-24 mt-20">
-              <p className="text-center font-semibold text-white mb-1">
+            <div className="shadow-lg bg-blue-700 rounded-md p-2 mt-20">
+              <p className="text-center font-semibold text-white mb-3">
                 Categories
               </p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {event.categories.map((tag, idx) => (
                   <Tag name={tag} color={colors[idx]} key={idx} />
                 ))}

@@ -1,5 +1,6 @@
 "use client";
 import React, {
+  useCallback,
   useContext,
   useEffect,
   useRef,
@@ -9,6 +10,28 @@ import React, {
 import Globe from "react-globe.gl";
 import TimelineContext from "./timeline/TimelineContext";
 import Loading from "../components/Loading";
+
+type DebounceFunction<T extends (...args: any[]) => void> = (
+  fn: T,
+  delay: number
+) => (...args: Parameters<T>) => void;
+
+// Debounce function
+export const useDebouncedValue = (inputValue: any, delay: any) => {
+  const [debouncedValue, setDebouncedValue] = useState(inputValue);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(inputValue);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputValue, delay]);
+
+  return debouncedValue;
+};
 
 const Earth = () => {
   const context = useContext(TimelineContext);
@@ -26,32 +49,35 @@ const Earth = () => {
   const [data, setData] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState();
 
-  useEffect(() => {
-    async function getMap() {
-      startYearTransition(async () => {
-        try {
-          const year =
-            Number(selectedYear.split(" ")[0]) *
-            (selectedYear.includes("BC") ? -1 : 1);
-
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/map/temp?period=${year}`
-          );
-          if (!response.ok) {
-            return;
-          }
-          const data = await response.json(); // Parse response body as JSON
-          setData(data.map.features);
-        } catch (error) {
-          console.error("Error fetching GeoJSON data:", error);
+  // Function to fetch map data
+  const fetchMapData = async (year?: number, setData?: (data: any) => void) => {
+    startYearTransition(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/map/temp?period=${year}`
+        );
+        if (!response.ok) {
+          return;
         }
-      });
-    }
-    getMap();
-  }, [selectedYear]);
+        const data = await response.json();
+        setData!(data.map.features);
+      } catch (error) {
+        console.error("Error fetching GeoJSON data:", error);
+      }
+    });
+  };
+
+  const debouncedYear = useDebouncedValue(selectedYear, 1000);
+
+  useEffect(() => {
+    const year =
+      Number(debouncedYear.split(" ")[0]) *
+      (debouncedYear.includes("BC") ? -1 : 1);
+    fetchMapData(year, setData);
+  }, [debouncedYear]);
 
   return (
-    <div className="relative" >
+    <div className="relative">
       {typeof window !== "undefined" && (
         <Globe
           ref={globeEl}
@@ -87,7 +113,6 @@ const Earth = () => {
           globeImageUrl="/earthmap.jpeg"
           bumpImageUrl="/earthbump.jpeg"
           backgroundColor="#00000000"
-          
         ></Globe>
       )}
     </div>
