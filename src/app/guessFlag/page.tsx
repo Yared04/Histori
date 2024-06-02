@@ -1,9 +1,15 @@
-import React from 'react'
+import React from "react";
+import FlagItem from "./FlagItem";
+import ClientComponent from "../components/ClientComponent";
 
 const page = () => {
   return (
-    <div>page</div>
-  )
-}
+    <ClientComponent>
+      <div className="flex justify-center self-center">
+        <FlagItem />
+      </div>
+    </ClientComponent>
+  );
+};
 
-export default page
+export default page;
