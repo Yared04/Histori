@@ -1,12 +1,13 @@
 import React from 'react'
 import AddArticle from './AddArticle'
+import ClientComponent from '../components/ClientComponent'
 
-const page = () => {
+const Articles = () => {
   return (
-    <div>
+    <ClientComponent>
         <AddArticle />
-    </div>
+    </ClientComponent>
   )
 }
 
-export default page
+export default Articles
