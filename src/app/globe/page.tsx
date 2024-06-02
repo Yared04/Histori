@@ -24,10 +24,13 @@ const Home = () => {
 
   const { selectedYear, country } = context;
 
+  console.log(selectedYear.split(" ")[0], country);
   useEffect(() => {
     const fetchEvents = async () => {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/histories?year=${selectedYear}&country=${country}`
+        `${process.env.NEXT_PUBLIC_BASE_URL}/histories?year=${
+          selectedYear.split(" ")[0]
+        }&country=${country}`
       );
       const events = await res.json();
       setOpenModals(new Array(events.length).fill(false));
