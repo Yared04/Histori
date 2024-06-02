@@ -2,7 +2,7 @@ import React from 'react'
 import AddArticle from './AddArticle'
 import ClientComponent from '../components/ClientComponent'
 
-const page = () => {
+const Articles = () => {
   return (
     <ClientComponent>
         <AddArticle />
@@ -10,4 +10,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Articles
