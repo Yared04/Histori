@@ -1,4 +1,3 @@
-"use client";
 import React from 'react'
 import AddArticle from './AddArticle'
 import ClientComponent from '../components/ClientComponent'
@@ -6,7 +5,8 @@ import ClientComponent from '../components/ClientComponent'
 const Articles = () => {
   return (
     <ClientComponent>
-        <AddArticle />
+      <div></div>
+        {/* <AddArticle /> */}
     </ClientComponent>
   )
 }
