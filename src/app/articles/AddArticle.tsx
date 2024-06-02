@@ -1,5 +1,5 @@
 "use client";
-import { Button, Checkbox, Label, Select, TextInput } from "flowbite-react";
+import { Button, TextInput } from "flowbite-react";
 import React, { ChangeEvent, useState } from "react";
 import Countries from "./Countries";
 import ReactQuill from "react-quill";
