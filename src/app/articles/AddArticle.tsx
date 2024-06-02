@@ -2,9 +2,13 @@
 import { Button, TextInput } from "flowbite-react";
 import React, { ChangeEvent, useState } from "react";
 import Countries from "./Countries";
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { MultiSelect } from 'primereact/multiselect';
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false,
+});
 
 const AddArticle = () => {
   const [thumbnails, setThumbnails] = useState<string[]>([]);

@@ -5,8 +5,7 @@ import ClientComponent from '../components/ClientComponent'
 const Articles = () => {
   return (
     <ClientComponent>
-      <div></div>
-        {/* <AddArticle /> */}
+        <AddArticle />
     </ClientComponent>
   )
 }
