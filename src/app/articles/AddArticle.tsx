@@ -3,10 +3,10 @@ import { Button, TextInput } from "flowbite-react";
 import React, { ChangeEvent, useState } from "react";
 import Countries from "./Countries";
 import "react-quill/dist/quill.snow.css";
-import { MultiSelect } from 'primereact/multiselect';
+import { MultiSelect } from "primereact/multiselect";
 import dynamic from "next/dynamic";
 
-const ReactQuill = dynamic(() => import('react-quill'), {
+const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
 
@@ -172,27 +172,12 @@ const AddArticle = () => {
                   />
                 </div>
               ))}
-              <svg
-                className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400 self-center"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
             </div>
           )}
 
           <input
             type="file"
-            multiple
+            // multiple
             onChange={handleFileChange}
             className="hidden"
             id="fileInput"
@@ -208,15 +193,14 @@ const AddArticle = () => {
             className="rounded-none text-red-500 mb-2"
           />
           <Countries onChange={handleCountryChange} value={selectedCountry} />
-          <div className="bg-zinc-700 mt-4 py-1 px-3 shadow-lg rounded-md items-center">
-            <h2 className="font-bold text-xl text-white text-center">
-              Sources
-            </h2>
-            <textarea
-              className="w-full h-20 p-2 my-2 mx-1 bg-white rounded-md"
-              placeholder="Put your sources here separated by commas"
-            ></textarea>
-          </div>
+          <ReactQuill
+            value={description}
+            className="my-4 border-gray-500 h-64 rounded-md bg-white"
+            onChange={setDescription}
+            placeholder={"Write something..."}
+            modules={modules}
+            formats={formats}
+          />
         </div>
 
         <div className="basis-1/3 flex flex-col gap-3">
@@ -227,31 +211,41 @@ const AddArticle = () => {
             <div className="p-3">
               <MultiSelect
                 value={categories}
-                onChange={(e: { value: React.SetStateAction<any[]>; }) => setCategories(e.value)}
+                onChange={(e: { value: React.SetStateAction<any[]> }) =>
+                  setCategories(e.value)
+                }
                 options={_categories}
                 optionLabel="name"
-                unstyled={true}
                 placeholder="Select Categories"
-                className="max-w-48"
+                maxSelectedLabels={5}
               />
             </div>
+          </div>
+          <div className="bg-zinc-700 py-1 px-3 shadow-lg rounded-md items-center">
+            <h2 className="font-bold text-xl text-white text-center">
+              Sources
+            </h2>
+            <textarea
+              className="w-full h-20 p-2 my-2 mx-1 bg-white rounded-md"
+              placeholder="Put your sources here separated by commas"
+            ></textarea>
           </div>
 
           <div className="bg-zinc-700 py-1 px-3 shadow-lg rounded-md">
             <h2 className="font-bold text-xl text-white text-center">
               Event Time Frame
             </h2>
-            <div className="my-2">
+            <div className="my-2 flex gap-4">
               <input
                 type="number"
-                className="w-full h-10 p-2 mb-3 bg-white rounded-md"
+                className="h-10 p-2 mb-3 bg-white rounded-md"
                 placeholder="Start Year"
                 value={startYear}
                 onChange={handleStartYearChange}
               />
               <input
                 type="number"
-                className="w-full h-10 p-2 bg-white rounded-md"
+                className="h-10 p-2 bg-white rounded-md"
                 placeholder="End Year"
                 value={endYear}
                 onChange={handleEndYearChange}
@@ -260,14 +254,6 @@ const AddArticle = () => {
           </div>
         </div>
       </div>
-      <ReactQuill
-        value={description}
-        className="my-4 dark:border-secondary-40 border-gray-500 rounded-md text-white"
-        onChange={setDescription}
-        placeholder={"Write something..."}
-        modules={modules}
-        formats={formats}
-      />
       <div className="flex justify-end gap-5 z-10">
         <Button onClick={handleSave} color="warning">
           Save Progress

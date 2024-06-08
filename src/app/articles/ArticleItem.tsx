@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { Card } from "flowbite-react";
+
 
 interface EventItemProps {
   title: string;
@@ -9,9 +9,6 @@ interface EventItemProps {
   image: string;
   startYear: number;
   endYear: number;
-  openModals: boolean[];
-  setOpenModals: (openModals: boolean[]) => void;
-  idx: number;
 }
 
 const EventItem = ({
@@ -20,21 +17,11 @@ const EventItem = ({
   description,
   startYear,
   endYear,
-  openModals,
-  idx,
-  setOpenModals,
 }: EventItemProps) => {
-
-  const handleOpenDetial = (idx: number) => {
-    const newOpenModals = [...openModals];
-    newOpenModals[idx] = true;
-    setOpenModals(newOpenModals);
-    console.log(openModals);
-  };
 
   return (
     <div
-      onClick={() => handleOpenDetial(idx)}
+      // onClick={() => handleOpenDetial(idx)}
       className="block overflow-hidden max-h-96 cursor-pointer border-b-2 text-white max-w-fill p-2 rounded"
     >
       {/* <Image

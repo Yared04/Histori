@@ -1,13 +1,13 @@
-import React from 'react'
-import AddArticle from './AddArticle'
-import ClientComponent from '../components/ClientComponent'
+import React from "react";
+import AddArticle from "./AddArticle";
+import ClientComponent from "../components/ClientComponent";
 
 const Articles = () => {
   return (
-    <ClientComponent>
-        <AddArticle />
-    </ClientComponent>
-  )
-}
+    <div className="px-20 pt-10">
+      <AddArticle />
+    </div>
+  );
+};
 
-export default Articles
+export default Articles;

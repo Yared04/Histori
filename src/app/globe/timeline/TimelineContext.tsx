@@ -9,8 +9,12 @@ import React, {
 } from "react";
 
 interface TimelineContextType {
+  displayYear: number;
+  setDisplayYear: React.Dispatch<React.SetStateAction<number>>;
   selectedYear: string;
+  setSelectedYear: React.Dispatch<React.SetStateAction<string>>;
   sliderPosition: number;
+  setSliderPosition: React.Dispatch<React.SetStateAction<number>>;
   updateYearAndSlider: (newPosition: number) => void;
   isYearTransitionPending: boolean;
   startYearTransition: React.TransitionStartFunction;
@@ -33,6 +37,7 @@ export const TimelineProvider: FunctionComponent<TimelineProviderProps> = ({
   const [sliderPosition, setSliderPosition] = useState<number>(0);
   const [isYearTransitionPending, startYearTransition] = useTransition();
   const [country, setCountry] = useState<string>("");
+  const [displayYear, setDisplayYear] = useState<number>(2024);
 
   useEffect(() => {
     updateYear("2024 AD");
@@ -54,20 +59,27 @@ export const TimelineProvider: FunctionComponent<TimelineProviderProps> = ({
 
   const updateYearAndSlider = (newPosition: number): void => {
     setSliderPosition(newPosition);
-
     let currentYear: string;
     const newCurrentYear = 54.99999999999995 * newPosition;
     if (newCurrentYear < 3000) {
-      currentYear = Math.round(3000 - newCurrentYear) + " BC";
+      const temp = Math.round(3000 - newCurrentYear);
+      setDisplayYear(temp);
+      currentYear = temp + " BC";
     } else {
-      currentYear = Math.round(newCurrentYear - 3000) + " AD";
+      const temp = Math.round(newCurrentYear - 3000);
+      setDisplayYear(temp);
+      currentYear = temp + " AD";
     }
     setSelectedYear(currentYear);
   };
 
   const contextValue: TimelineContextType = {
+    displayYear,
+    setDisplayYear,
     selectedYear,
+    setSelectedYear,
     sliderPosition,
+    setSliderPosition,
     updateYearAndSlider,
     isYearTransitionPending,
     startYearTransition,

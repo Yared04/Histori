@@ -1,45 +1,39 @@
-import React, { useState } from "react";
+"use client";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { Button, Modal, Dropdown } from "flowbite-react";
+import { Modal, Dropdown } from "flowbite-react";
 import Tag from "../components/Tag";
 import { Event } from "@/app/types/Event";
 import axios from "axios";
+import { Toast } from "primereact/toast";
 
 interface ArticleDetailProps {
   event: Event;
-  openModals: boolean[];
-  setOpenModals: (openModals: boolean[]) => void;
   startYear: number;
   endYear: number;
-  idx: number;
 }
 
-const ArticleDetail = ({
-  event,
-  openModals,
-  setOpenModals,
-  startYear,
-  endYear,
-  idx
-}: ArticleDetailProps) => {
+const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
   const [openModal2, setOpenModal2] = useState(false);
   const [reason, setReason] = useState("");
+  const toast = useRef<Toast>(null);
 
-  const colors = [
-    "bg-red-500",
-    "bg-green-500",
-    "bg-yellow-500",
-    "bg-blue-500",
-    "bg-indigo-500",
-    "bg-purple-500",
-    "bg-pink-500",
-  ];
+  const showSuccess = () => {
+    toast.current?.show({
+      severity: "success",
+      summary: "Success",
+      detail: "Report Submitted!",
+      life: 2000,
+    });
+  };
 
-
-  const handleCloseDetail = (idx: number) => {
-    const newOpenModals = [...openModals];
-    newOpenModals[idx] = false;
-    setOpenModals(newOpenModals);
+  const showError = (detail: string) => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Error",
+      detail: detail,
+      life: 2000,
+    });
   };
 
   const handleReportSubmit = async (id: string) => {
@@ -52,10 +46,20 @@ const ArticleDetail = ({
           reason: reason,
           contentId: id,
           type: "History",
+          title: event.title,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
-    } catch (error) {
-      console.log(error);
+
+      console.log(response);
+      showSuccess();
+    } catch (error: any) {
+      console.error(error);
+      showError(error.response.data.message);
     }
     setReason("");
     setOpenModal2(false);
@@ -63,33 +67,20 @@ const ArticleDetail = ({
 
   return (
     <>
-      <div className="flex gap-2 text-white min-h-72">
-        <div className="basis-[70%]">
+      <div className="text-white min-h-72">
+        {event.image && (
+          <Image
+            // src="http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/4426610795937015821"
+            src={event.image}
+            alt="Picture of the article"
+            width={100}
+            height={100}
+            className="w-full h-56 object-fill rounded-lg"
+          />
+        )}
+        <div className="flex justify-between">
           <h1 className="p-2 text-xl font-bold ">{event.title}</h1>
-          <p className="text-xs pl-2">
-            From {startYear} to {endYear}
-          </p>
-
-          <div className="p-2 no-scrollbar">
-            <div className="space-y-6">
-              <div className="">
-                {event.image && (
-                  <Image
-                    src={event.image}
-                    alt="Picture of the article"
-                    width={100}
-                    height={100}
-                  />
-                )}
-              </div>
-              <p className="text-sm leading-relaxed max-h-[70vh] text-white overflow-y-scroll no-scrollbar">
-                {event.content}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="basis-[30%] flex flex-col">
-          <div className="basis-1/12 flex justify-end">
+          <div className="self-center">
             <Dropdown
               label=""
               size="sm"
@@ -118,22 +109,20 @@ const ArticleDetail = ({
               </Dropdown.Item>
             </Dropdown>
           </div>
-          <div className="basis-11/12 flex flex-col justify-between">
-            <div className="shadow-lg bg-blue-700 rounded-md p-2 mt-20">
-              <p className="text-center font-semibold text-white mb-3">
-                Categories
-              </p>
-              <div className="flex gap-2 flex-wrap">
-                {event.categories.map((tag, idx) => (
-                  <Tag name={tag} color={colors[idx]} key={idx} />
-                ))}
-              </div>
-            </div>
-            <div className="flex justify-end z-10">
-              <Button onClick={() => handleCloseDetail(idx)} color="blue">
-                Finish
-              </Button>
-            </div>
+        </div>
+        <p className="text-xs pl-2">
+          From {startYear} to {endYear}
+        </p>
+        <div className="flex gap-2 pl-2 py-4 flex-wrap">
+          {event.categories.map((tag, idx) => (
+            <Tag name={tag} key={idx} />
+          ))}
+        </div>
+        <div className="p-2 no-scrollbar">
+          <div className="space-y-6">
+            <p className="text-sm leading-relaxed max-h-[70vh] text-white no-scrollbar">
+              {event.content}
+            </p>
           </div>
         </div>
       </div>
@@ -162,12 +151,13 @@ const ArticleDetail = ({
           </Modal.Body>
           <button
             onClick={() => handleReportSubmit(event._id)}
-            className="mx-auto mb-5 py-3 px-6 bg-blue-700 text-white rounded-md"
+            className="mx-auto mb-5 py-3 px-6 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Report
           </button>
         </Modal>
       </div>
+      <Toast ref={toast} position="top-center" />
     </>
   );
 };
