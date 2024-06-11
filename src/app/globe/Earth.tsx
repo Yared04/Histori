@@ -11,10 +11,6 @@ import Globe from "react-globe.gl";
 import TimelineContext from "./timeline/TimelineContext";
 import Loading from "../components/Loading";
 
-type DebounceFunction<T extends (...args: any[]) => void> = (
-  fn: T,
-  delay: number
-) => (...args: Parameters<T>) => void;
 
 // Debounce function
 export const useDebouncedValue = (inputValue: any, delay: any) => {

@@ -9,7 +9,7 @@ const Timeline = () => {
     throw new Error("Timeline must be used within a TimelineProvider");
   }
 
-  const { selectedYear, sliderPosition, updateYearAndSlider } = context;
+  const { selectedYear, sliderPosition, updateYearAndSlider, setDisplayYear } = context;
   const years = [];
   for (let year = -3000; year <= 2500; year += 100) {
     if (year < 0) {

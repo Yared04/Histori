@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { PrimeReactProvider } from "primereact/api";
 import Tailwind from "primereact/passthrough/tailwind";
+import 'primereact/resources/themes/lara-light-blue/theme.css'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,7 @@ export default function RootLayout({
   return (
     <PrimeReactProvider value={{ pt: Tailwind}}>
       <html lang="en">
-        <body className={inter.className}>
+        <body className="">
           <Providers>{children}</Providers>
         </body>
       </html>

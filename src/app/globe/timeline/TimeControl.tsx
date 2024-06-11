@@ -4,6 +4,7 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import Tooltip from "../ToolTip";
 import TimelineContext from "./TimelineContext";
 import Loading from "@/app/components/Loading";
+import { dir } from "console";
 
 const TimeControl = () => {
   const context = useContext(TimelineContext);
@@ -13,12 +14,15 @@ const TimeControl = () => {
   }
 
   const {
+    displayYear,
+    setDisplayYear,
     selectedYear,
+    setSelectedYear,
     sliderPosition,
-    updateYearAndSlider,
+    setSliderPosition,
     isYearTransitionPending,
-    startYearTransition,
   } = context;
+
 
   const years = [];
   for (let year = -3000; year <= 2500; year += 100) {
@@ -30,6 +34,33 @@ const TimeControl = () => {
       years.push(`${year} AD`);
     }
   }
+
+  const handleYearChange = (e: any) => {
+    const value = e.target.value;
+    const parsedValue = parseInt(value, 10);
+
+    if (!isNaN(parsedValue)) {
+      setDisplayYear(parsedValue);
+
+      // Update selected year with AD/BC notation
+      const formattedYear =
+        parsedValue > 0 ? `${parsedValue} AD` : `${Math.abs(parsedValue)} BC`;
+      setSelectedYear(formattedYear);
+
+      // Adjust the slider position calculation
+      const maxYear = 2500; // Assuming the range is from 3000 BC to 3000 AD
+      const minYear = -3000;
+
+      const clampedValue = Math.max(minYear, Math.min(maxYear, parsedValue));
+      const newPosition =
+        ((clampedValue - minYear) / (maxYear - minYear)) * 100;
+
+      if (newPosition >= 0 && newPosition <= 100) {
+        setSliderPosition(newPosition);
+      }
+    }
+  };
+
 
   return (
     <div className="flex items-center space-x-2">
@@ -53,9 +84,15 @@ const TimeControl = () => {
         <Button step="1" direction="left" sliderPosition={sliderPosition} />
       </div>
       <div className="w-20 flex justify-center">
-        <p className="text-md text-white font-semibold self-center">
-          {selectedYear}
-        </p>
+        <input
+          type="number"
+          className="text-md text-white font-semibold w-16 -mx-2 self-center bg-transparent border-none text-center no-spinner focus:outline-none focus:ring-0"
+          value={displayYear}
+          onChange={handleYearChange}
+        />
+        <span className="text-md text-white font-semibold self-center">
+          {selectedYear && selectedYear.split(" ")[1]}
+        </span>
       </div>
 
       <div className="flex gap-2 p-1 bg-white bg-opacity-5 rounded-full">
@@ -114,7 +151,7 @@ const Button = ({ step, direction, sliderPosition, size }: ButtonProps) => {
     if (newPosition < 0 || newPosition > 99.9818181818182) {
       return;
     }
-    console.log(newPosition);
+
     updateYearAndSlider(newPosition);
   };
 

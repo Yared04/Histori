@@ -1,14 +1,18 @@
 import Image from "next/image";
 import React from "react";
 
-const FlagItem = () => {
+interface FlagItemProps {
+  imageUrl: string;
+}
+
+const FlagItem = ({imageUrl}: FlagItemProps) => {
   return (
     <div >
       <Image
        className="shadow-lg rounded-lg object-cover"
-        src="http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/-1592365701459389321"
+        src={imageUrl}
         alt="flag"
-        width={200}
+        width={450}
         height={200}
       />
     </div>

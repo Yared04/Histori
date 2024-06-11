@@ -1,14 +1,12 @@
 import React from "react";
-import FlagItem from "./FlagItem";
 import ClientComponent from "../components/ClientComponent";
+import MatchingGame from "./MatchingGame";
 
 const page = () => {
   return (
-    <ClientComponent>
-      <div className="flex justify-center self-center">
-        <FlagItem />
-      </div>
-    </ClientComponent>
+    <div className="">
+      <MatchingGame />
+    </div>
   );
 };
 

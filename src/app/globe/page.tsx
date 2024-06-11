@@ -8,22 +8,19 @@ import { useDebouncedValue } from "./Earth";
 
 const Home = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [openModals, setOpenModals] = useState<boolean[]>([]);
   const context = useContext(TimelineContext);
 
   if (!context) {
     throw new Error("Timeline must be used within a TimelineProvider");
   }
 
-  const { selectedYear, country, isYearTransitionPending } = context;
+  const { selectedYear, country } = context;
 
   const fetchEvents = async () => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/histories?year=${selectedYear}&country=${country}`
     );
-    console.log(res);
     const events = await res.json();
-    setOpenModals(new Array(events.length).fill(false));
     setEvents(events);
   };
 
@@ -36,8 +33,6 @@ const Home = () => {
   return (
     <ClientComponent>
       <SideBar
-        openModals={openModals}
-        setOpenModals={setOpenModals}
         events={events}
       />
     </ClientComponent>

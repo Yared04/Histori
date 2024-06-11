@@ -3,7 +3,6 @@
 @layer tailwind-base {
   @tailwind base;
 }
-
 @layer tailwind-utilities {
   @tailwind components;
   @tailwind utilities;
@@ -40,6 +39,20 @@ body {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+
+  .no-spinner::-webkit-outer-spin-button,
+  .no-spinner::-webkit-inner-spin-button {
+    @apply appearance-none;
+    margin: 0;
+  }
+
+  .no-spinner[type="number"] {
+    @apply appearance-none;
+  }
+}
+
+.ql-container {
+  height: calc(100% - 42px) !important;
 }
 
 .slider-thumb::-webkit-slider-thumb {
