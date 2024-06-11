@@ -1,11 +1,13 @@
 "use client";
 import { Button, TextInput } from "flowbite-react";
 import React, { ChangeEvent, useContext, useState } from "react";
-import Countries from "./Countries";
+import Countries from "../Countries";
 import "react-quill/dist/quill.snow.css";
 import { MultiSelect } from "primereact/multiselect";
 import dynamic from "next/dynamic";
-import { ArticleContext } from "./ArticleContext";
+import { ArticleContext } from "../ArticleContext";
+import ArticleItem from "../ArticleItem";
+import ReportItem from "../ReportItem";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -35,7 +37,7 @@ const AddArticle = () => {
     });
   };
 
-  const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     dispatch({ type: "SET_COUNTRY", payload: value });
   };
@@ -75,29 +77,6 @@ const AddArticle = () => {
       reader.readAsDataURL(image);
     }
   };
-
-  // const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   const files = event.target.files;
-  //   const fileThumbnails: string[] = [];
-
-  //   if (files) {
-  //     for (let i = 0; i < files.length; i++) {
-  //       const file = files[i];
-  //       const reader = new FileReader();
-
-  //       reader.onload = (e) => {
-  //         if (e.target?.result) {
-  //           fileThumbnails.push(e.target.result.toString());
-  //           if (fileThumbnails.length === files.length) {
-  //             setThumbnails(fileThumbnails);
-  //           }
-  //         }
-  //       };
-
-  //       reader.readAsDataURL(file);
-  //     }
-  //   }
-  // };
 
   const modules = {
     toolbar: [
@@ -159,11 +138,20 @@ const AddArticle = () => {
     console.log("Save Progress");
   };
 
+  const mockArticle = {
+    title: "Article Title",
+    description: "Article Description",
+    image: "https://via.placeholder.com/150",
+    startYear: 2021,
+    endYear: 2022,
+  };
+
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 px-20 py-10">
       <h1 className="text-white text-3xl text-center font-bold">
-        Create an Article
+        Edit Reported Article
       </h1>
+      <ReportItem title={mockArticle.title} description={mockArticle.description} image={mockArticle.image} reportDate={0} />
       <div className="flex w-full items-center justify-center">
         <label
           htmlFor="fileInput"
@@ -217,7 +205,7 @@ const AddArticle = () => {
           />
         </label>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-10">
         <div className="basis-2/3 flex flex-col">
           <TextInput
             id="title"
@@ -227,7 +215,14 @@ const AddArticle = () => {
             className="rounded-none text-red-500 mb-2"
             onChange={handleTitleChange}
           />
-          <Countries onChange={handleCountryChange} value={state.country} />
+          <TextInput
+            id="country"
+            placeholder="Country"
+            value={state.country}
+            type="text"
+            className="rounded-none text-red-500 mb-2"
+            onChange={handleCountryChange}
+          />
           <ReactQuill
             value={state.content}
             className="my-4 border-gray-500 h-64 rounded-md bg-white"

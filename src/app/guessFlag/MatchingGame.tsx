@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import FlagItem from "./FlagItem";
+import axios from "axios";
 
 interface Flag {
   _id: string;
@@ -16,60 +17,71 @@ interface Option {
   name: string;
 }
 
-const initialFlags: Flag[] = [
-  {
-    _id: "6653bce913250febe6595bc0",
-    url: "http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/4426610795937015821",
-    country: "Thailand",
-    start_year: 1916,
-    end_year: 1917,
-    __v: 0,
-  },
-  {
-    _id: "6653bd0613250febe6595c0f",
-    url: "http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/-5389880595760930261",
-    country: "Ukraine",
-    start_year: 1362,
-    end_year: 1471,
-    __v: 0,
-  },
-  {
-    _id: "6653bbd813250febe6595853",
-    url: "http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/658568367131566657",
-    country: "Montenegro",
-    start_year: 1876,
-    end_year: 1905,
-    __v: 0,
-  },
-  {
-    _id: "6653ba6f13250febe6595478",
-    url: "http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/-6230532653733832307",
-    country: "Ecuador",
-    start_year: 1812,
-    end_year: 1820,
-    __v: 0,
-  },
-];
-
 const MatchingGame: React.FC = () => {
-  const [flags, setFlags] = useState<Flag[]>(initialFlags);
+  const [flags, setFlags] = useState<Flag[]>([]);
   const [currentFlagIndex, setCurrentFlagIndex] = useState<number>(0);
-  const [selectedFlag, setSelectedFlag] = useState<Flag | null>(flags[0]);
+  const [selectedFlag, setSelectedFlag] = useState<Flag | null>(null);
   const [currentOptions, setCurrentOptions] = useState<Option[]>([]);
   const [answerResult, setAnswerResult] = useState<{
     [key: string]: boolean | null;
   }>({});
   const [score, setScore] = useState<number>(0);
+  const [round, setRound] = useState<number>(1);
+  const [gameOver, setGameOver] = useState<boolean>(false);
 
   useEffect(() => {
-    if (flags.length) {
-      const options = flags.map((flag) => ({
-        id: flag._id,
-        name: `${flag.country} (${flag.start_year} - ${flag.end_year})`,
-      }));
-      setCurrentOptions(options);
+    fetchFlags();
+  }, []);
+
+  useEffect(() => {
+    if (round > 5) {
+      setGameOver(true);
+    } else if (flags.length > 0) {
+      updateFlagAndOptions(currentFlagIndex);
     }
-  }, [flags]);
+  }, [flags, currentFlagIndex, round]);
+
+  const fetchFlags = async () => {
+    const response = await axios.get(
+      process.env.NEXT_PUBLIC_BASE_URL + "/flags?count=20", // Fetch a larger pool of flags
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    const data = response.data.data;
+    setFlags(data.flags);
+    setCurrentFlagIndex(0);
+    setRound(1);
+    setScore(0);
+    setGameOver(false);
+  };
+
+  const updateFlagAndOptions = (index: number) => {
+    const correctFlag = flags[index];
+    setSelectedFlag(correctFlag);
+    generateOptions(correctFlag);
+  };
+
+  const generateOptions = (correctFlag: Flag) => {
+    let options = [correctFlag];
+    const incorrectFlags = flags.filter(flag => flag._id !== correctFlag._id);
+    while (options.length < 4) {
+      const randomIndex = Math.floor(Math.random() * incorrectFlags.length);
+      const randomFlag = incorrectFlags.splice(randomIndex, 1)[0];
+      options.push(randomFlag);
+    }
+    const optionItems = options.map(flag => ({
+      id: flag._id,
+      name: `${flag.country} (${flag.start_year} - ${flag.end_year})`
+    }));
+    setCurrentOptions(shuffleArray(optionItems));
+  };
+
+  const shuffleArray = (array: any[]) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
 
   const handleOptionClick = (option: Option) => {
     if (selectedFlag) {
@@ -77,29 +89,25 @@ const MatchingGame: React.FC = () => {
       setAnswerResult({ [option.id]: isCorrect });
       if (isCorrect) {
         setScore((prevScore) => prevScore + 1);
-        setTimeout(() => {
-          fetchNextFlags();
-        }, 500);
-      } else {
-        setScore((prevScore) => prevScore - 1);
       }
+      setTimeout(() => {
+        if (round < 5) {
+          setCurrentFlagIndex((prevIndex) => prevIndex + 1);
+          setRound((prevRound) => prevRound + 1);
+          setAnswerResult({});
+        } else {
+          setGameOver(true);
+        }
+      }, 1500); // Add a delay before showing the next flag and options
     }
-  };
-
-  const fetchNextFlags = async () => {
-    // Fetch next set of flags from the backend
-    // Example:
-    // const response = await fetch('API_ENDPOINT');
-    // const data = await response.json();
-    // setFlags(data.flags);
-
-    setCurrentFlagIndex((prevIndex) => prevIndex + 1);
-    setSelectedFlag(flags[currentFlagIndex + 1]);
-    setAnswerResult({});
   };
 
   const retry = () => {
     setAnswerResult({});
+  };
+
+  const restartGame = () => {
+    fetchFlags(); // Fetch new flags from the backend
   };
 
   const renderIcon = (isCorrect: boolean) => {
@@ -112,51 +120,69 @@ const MatchingGame: React.FC = () => {
 
   return (
     <div className="flex flex-col mx-40 my-10">
-      <div className="flex justify-between">
-        <p className="text-xl text-white text-start mb-8">
-          <span className="text-blue-600 text-2xl">Q: </span>Which country does
-          this flag belong to?
-        </p>
-        <p className="text-xl text-white text-start mb-8">
-          Score: <span className="text-blue-600 text-xl">{score}</span>
-        </p>
-      </div>
-      {selectedFlag && (
-        <div className="mb-16 text-center mx-auto">
-          <FlagItem imageUrl={selectedFlag.url} />
-        </div>
-      )}
-      <div className="grid grid-cols-2 gap-8 mb-5">
-        {currentOptions.map((option) => (
-          <div
-            key={option.id}
-            className={`p-3 border rounded cursor-pointer transition-colors flex items-center justify-between ${
-              answerResult[option.id] === true
-                ? "bg-green-200 ring-1 ring-green-500"
-                : answerResult[option.id] === false
-                ? "bg-red-200 ring-1 ring-red-500"
-                : "bg-transparent text-white hover:-translate-y-1 hover:ring-1 hover:ring-gray-500"
-            }`}
-            onClick={() => handleOptionClick(option)}
+      {gameOver ? (
+        <div className="text-center text-white">
+          <p className="text-2xl mb-4">Game Over!</p>
+          <p className="text-xl mb-4">Your final score is: {score}/5</p>
+          <button
+            onClick={restartGame}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
           >
-            {option.name}
-            {answerResult[option.id] !== undefined &&
-              renderIcon(answerResult[option.id] as boolean)}
+            Restart Game
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-between">
+            <p className="text-xl text-white text-start mb-8">
+              <span className="text-blue-600 text-2xl">Q: </span>Which country
+              does this flag belong to?
+            </p>
+            <p className="text-xl text-white text-start mb-8">
+              Score: <span className="text-blue-600 text-xl">{score}</span>
+            </p>
           </div>
-        ))}
-      </div>
-      <button
-        onClick={
-          answerResult[Object.keys(answerResult)[0]] === false
-            ? retry
-            : fetchNextFlags
-        }
-        className="px-4 py-2 w-36 self-end bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-      >
-        {answerResult[Object.keys(answerResult)[0]] === false
-          ? "Retry"
-          : "Next"}
-      </button>
+          {selectedFlag && (
+            <div className="mb-16 text-center mx-auto">
+              <FlagItem imageUrl={selectedFlag.url} />
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-8 mb-5">
+            {currentOptions.map((option) => (
+              <div
+                key={option.id}
+                className={`p-3 border rounded cursor-pointer transition-colors flex items-center justify-between ${
+                  answerResult[option.id] === true
+                    ? "bg-green-200 ring-1 ring-green-500"
+                    : answerResult[option.id] === false
+                    ? "bg-red-200 ring-1 ring-red-500"
+                    : "bg-transparent text-white hover:-translate-y-1 hover:ring-1 hover:ring-gray-500"
+                }`}
+                onClick={() => handleOptionClick(option)}
+              >
+                {option.name}
+                {answerResult[option.id] !== undefined &&
+                  renderIcon(answerResult[option.id] as boolean)}
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={
+              answerResult[Object.keys(answerResult)[0]] === false
+                ? retry
+                : () => {
+                    setCurrentFlagIndex((prevIndex) => prevIndex + 1);
+                    setRound((prevRound) => prevRound + 1);
+                  }
+            }
+            className="px-4 py-2 w-36 self-end bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            {answerResult[Object.keys(answerResult)[0]] === false
+              ? "Retry"
+              : "Next"}
+          </button>
+        </>
+      )}
     </div>
   );
 };
