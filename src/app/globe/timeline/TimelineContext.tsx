@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 interface TimelineContextType {
-  displayYear: number;
+  displayYear: number | undefined;
   setDisplayYear: React.Dispatch<React.SetStateAction<number>>;
   selectedYear: string;
   setSelectedYear: React.Dispatch<React.SetStateAction<string>>;

@@ -4,7 +4,6 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import Tooltip from "../ToolTip";
 import TimelineContext from "./TimelineContext";
 import Loading from "@/app/components/Loading";
-import { dir } from "console";
 
 const TimeControl = () => {
   const context = useContext(TimelineContext);
