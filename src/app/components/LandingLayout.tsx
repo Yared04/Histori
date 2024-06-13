@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import { userContext } from "../auth/UserContext";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 
 const Landing = ({
   children,

@@ -1,10 +1,9 @@
 import { Button } from "flowbite-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import React from "react";
 import { FaLongArrowAltRight } from "react-icons/fa";
 
 const ExploreButton = () => {
-    
   const router = useRouter();
 
   const handleClick = () => {
@@ -12,7 +11,7 @@ const ExploreButton = () => {
   };
 
   return (
-    <div >
+    <div>
       <Button
         style={{ marginRight: "5rem" }}
         size="xl"
