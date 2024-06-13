@@ -4,9 +4,11 @@ import Landing from "./components/LandingLayout";
 import ExploreButton from "./components/ExploreButton";
 const index = () => {
   return (
-    <Landing>
-      <ExploreButton />
-    </Landing>
+    <div className="bg-[url('/stars.png')]">
+      <Landing>
+        <ExploreButton />
+      </Landing>
+    </div>
   );
 };
 
