@@ -22,9 +22,6 @@
   }
 }
 
-/* body {
-  background-image: url("/stars.png");
-} */
 
 @layer utilities {
   .text-balance {
