@@ -66,7 +66,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
   };
 
   return (
-    <div className="text-white min-h-72">
+    <div className="min-h-72">
       {event.image && (
         <Image
           src={event.image}
@@ -120,7 +120,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
       </div>
       <div className="p-2 overflow-y-auto max-h-[60vh]">
         <div className="space-y-6">
-          <p className="text-sm leading-relaxed text-white">{event.content}</p>
+          <p className="text-sm leading-relaxed ">{event.content}</p>
         </div>
       </div>
       <div className="mx-5 flex gap-9 justify-end">
@@ -132,7 +132,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         >
           <Modal.Header>Report Article</Modal.Header>
           <Modal.Body>
-            <h3 className="font-medium mb-4 dark:text-white">
+            <h3 className="font-medium mb-4">
               Describe your reason for reporting this article:
             </h3>
             <div>

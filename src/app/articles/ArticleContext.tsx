@@ -31,7 +31,8 @@ type ArticleActionType =
   | { type: "SET_START_YEAR"; payload: number | undefined}
   | { type: "SET_END_YEAR"; payload: number | undefined}
   | { type: "SET_SOURCES"; payload: string[] }
-  | { type: "SET_CATEGORIES"; payload: string[] };
+  | { type: "SET_CATEGORIES"; payload: string[] }
+  | { type: "RESET" };
 
 const articleReducer = (
   state: ArticleContextType,
@@ -54,6 +55,8 @@ const articleReducer = (
       return { ...state, sources: action.payload };
     case "SET_CATEGORIES":
       return { ...state, categories: action.payload };
+    case "RESET":
+      return initialArticleState;
     default:
       return state;
   }

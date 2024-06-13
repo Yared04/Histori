@@ -22,7 +22,7 @@ const EventItem = ({
   return (
     <div
       // onClick={() => handleOpenDetial(idx)}
-      className="block overflow-hidden max-h-96 cursor-pointer border-b-2 text-white max-w-fill p-2 rounded"
+      className="block overflow-hidden max-h-96 cursor-pointer border-b-2 border-black max-w-fill mr-3 p-2 rounded"
     >
       {/* <Image
         className="rounded-l-lg"

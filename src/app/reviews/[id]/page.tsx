@@ -7,6 +7,9 @@ import { ArticleContext } from "../../articles/ArticleContext";
 import ReportItem from "../ReportItem";
 import Image from "next/image";
 import axios from "axios";
+import Header from "@/app/components/Header";
+import Footer from "@/app/components/Footer";
+import Starfield from "react-starfield";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -238,20 +241,22 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <div className="lg:px-56">
-      <div className="flex flex-col gap-5 pt-10 pb-3">
-        <h1 className="text-white text-3xl text-center font-bold">
-          Edit Reported Article
-        </h1>
-        {report !== null && (
-          <ReportItem
-            title={report?.title}
-            description={report?.reason}
-            reportDate={report?.createdAt}
-            deadline={review?.due_date}
-          />
-        )}
-        {/* <div className="flex w-full items-center justify-center">
+    <>
+      <Header />
+      <div className="lg:px-56">
+        <div className="flex flex-col gap-5 pt-10 pb-3">
+          <h1 className="text-white text-3xl text-center font-bold">
+            Edit Reported Article
+          </h1>
+          {report !== null && (
+            <ReportItem
+              title={report?.title}
+              description={report?.reason}
+              reportDate={report?.createdAt}
+              deadline={review?.due_date}
+            />
+          )}
+          {/* <div className="flex w-full items-center justify-center">
           <label
             htmlFor="fileInput"
             className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -303,95 +308,103 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           </label>
         </div> */}
 
-        <div className="flex gap-5">
-          <div className="basis-2/3 flex flex-col">
-            <TextInput
-              id="title"
-              placeholder="Title"
-              value={state.title}
-              type="text"
-              className="rounded-none text-red-500 mb-3"
-              onChange={handleTitleChange}
-            />
-            <TextInput
-              id="country"
-              placeholder="Country"
-              value={state.country}
-              type="text"
-              className="rounded-none text-red-500"
-              onChange={handleCountryChange}
-            />
-            <ReactQuill
-              value={state.content}
-              className="my-3 border-gray-500 h-[17rem] rounded-lg bg-white"
-              onChange={handleContentChange}
-              placeholder={"Write something..."}
-              modules={modules}
-              formats={formats}
-            />
-          </div>
-
-          <div className="basis-1/3 flex flex-col gap-3">
-            <div className="bg-zinc-700 py-1 shadow-lg rounded-md items-center">
-              <h2 className="font-bold text-xl text-white text-center">
-                Categories
-              </h2>
-              <div className="p-3">
-                <TextInput
-                  id="categories"
-                  placeholder="Put your categories here separated by commas"
-                  value={state.categories}
-                  type="text"
-                  className="rounded-none text-red-500"
-                  onChange={handleCategoryChange}
-                />
-              </div>
-            </div>
-            <div className="bg-zinc-700 py-1 px-3 shadow-lg rounded-md items-center">
-              <h2 className="font-bold text-xl text-white text-center">
-                Sources
-              </h2>
-              <textarea
-                className="w-full h-20 p-2 my-2 mx-1 bg-white rounded-md"
-                placeholder="Put your sources here separated by commas"
-                value={state.sources}
-                onChange={handleSourcesChange}
-              ></textarea>
+          <div className="flex gap-5">
+            <div className="basis-2/3 flex flex-col">
+              <TextInput
+                id="title"
+                placeholder="Title"
+                value={state.title}
+                type="text"
+                className="rounded-none text-red-500 mb-3"
+                onChange={handleTitleChange}
+              />
+              <TextInput
+                id="country"
+                placeholder="Country"
+                value={state.country}
+                type="text"
+                className="rounded-none text-red-500"
+                onChange={handleCountryChange}
+              />
+              <ReactQuill
+                value={state.content}
+                className="my-3 border-gray-500 h-[17rem] rounded-lg bg-white"
+                onChange={handleContentChange}
+                placeholder={"Write something..."}
+                modules={modules}
+                formats={formats}
+              />
             </div>
 
-            <div className="bg-zinc-700 py-1 px-3 shadow-lg rounded-md">
-              <h2 className="font-bold text-xl text-white text-center">
-                Event Time Frame
-              </h2>
-              <div className="my-2 flex gap-4">
-                <input
-                  type="number"
-                  className="h-10 w-full py-2 mb-3 bg-white rounded-md"
-                  placeholder="Start Year"
-                  value={state.startYear}
-                  onChange={handleStartYearChange}
-                />
-                <input
-                  type="number"
-                  className="h-10 py-2 w-full bg-white rounded-md"
-                  placeholder="End Year"
-                  value={state.endYear}
-                  onChange={handleEndYearChange}
-                />
+            <div className="basis-1/3 flex flex-col gap-3">
+              <div className="bg-zinc-700 py-1 shadow-lg rounded-md items-center">
+                <h2 className="font-bold text-xl text-white text-center">
+                  Categories
+                </h2>
+                <div className="p-3">
+                  <TextInput
+                    id="categories"
+                    placeholder="Put your categories here separated by commas"
+                    value={state.categories}
+                    type="text"
+                    className="rounded-none text-red-500"
+                    onChange={handleCategoryChange}
+                  />
+                </div>
+              </div>
+              <div className="bg-zinc-700 py-1 px-3 shadow-lg rounded-md items-center">
+                <h2 className="font-bold text-xl text-white text-center">
+                  Sources
+                </h2>
+                <textarea
+                  className="w-full h-20 p-2 my-2 mx-1 bg-white rounded-md"
+                  placeholder="Put your sources here separated by commas"
+                  value={state.sources}
+                  onChange={handleSourcesChange}
+                ></textarea>
+              </div>
+
+              <div className="bg-zinc-700 py-1 px-3 shadow-lg rounded-md">
+                <h2 className="font-bold text-xl text-white text-center">
+                  Event Time Frame
+                </h2>
+                <div className="my-2 flex gap-4">
+                  <input
+                    type="number"
+                    className="h-10 w-full py-2 mb-3 bg-white rounded-md"
+                    placeholder="Start Year"
+                    value={state.startYear}
+                    onChange={handleStartYearChange}
+                  />
+                  <input
+                    type="number"
+                    className="h-10 py-2 w-full bg-white rounded-md"
+                    placeholder="End Year"
+                    value={state.endYear}
+                    onChange={handleEndYearChange}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex justify-end gap-5 z-10">
-          <Button onClick={handleSave} color="warning">
-            Save Progress
-          </Button>{" "}
-          <Button onClick={handleSubmit} color="blue">
-            Submit
-          </Button>
+          <div className="flex justify-end gap-5 z-10">
+            <Button onClick={handleSave} color="warning">
+              Save Progress
+            </Button>{" "}
+            <Button onClick={handleSubmit} color="blue">
+              Submit
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+      <Footer />
+      <Starfield
+        starCount={2000}
+        starColor={[255, 255, 255]}
+        speedFactor={0.05}
+        backgroundColor="black"
+      />
+    </>
   );
 };
 
