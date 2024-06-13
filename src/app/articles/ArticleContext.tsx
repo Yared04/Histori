@@ -8,7 +8,7 @@ interface ArticleContextType {
   startYear: number | undefined;
   endYear: number  | undefined;
   sources: string[];
-  categories: category[];
+  categories: string[];
 }
 
 const initialArticleState: ArticleContextType = {
@@ -22,10 +22,7 @@ const initialArticleState: ArticleContextType = {
   categories: [],
 };
 
-type category = {
-  name: string;
-  id?: number;
-}
+
 type ArticleActionType =
   | { type: "SET_IMAGE_URL"; payload: string }
   | { type: "SET_TITLE"; payload: string }
@@ -34,7 +31,7 @@ type ArticleActionType =
   | { type: "SET_START_YEAR"; payload: number | undefined}
   | { type: "SET_END_YEAR"; payload: number | undefined}
   | { type: "SET_SOURCES"; payload: string[] }
-  | { type: "SET_CATEGORIES"; payload: category[] };
+  | { type: "SET_CATEGORIES"; payload: string[] };
 
 const articleReducer = (
   state: ArticleContextType,

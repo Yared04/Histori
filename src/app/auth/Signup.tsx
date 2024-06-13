@@ -3,7 +3,7 @@ import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { userContext } from "@/app/auth/UserContext";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import { Spinner } from "flowbite-react";
 
 const Signup = () => {

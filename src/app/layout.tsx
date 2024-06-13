@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <PrimeReactProvider value={{ pt: Tailwind}}>
       <html lang="en">
-        <body className="">
+        <body className=" font-serif">
           <Providers>{children}</Providers>
         </body>
       </html>

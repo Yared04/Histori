@@ -2,13 +2,11 @@
 import { Button, TextInput } from "flowbite-react";
 import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import "react-quill/dist/quill.snow.css";
-import { MultiSelect } from "primereact/multiselect";
 import dynamic from "next/dynamic";
-import { ArticleContext } from "../ArticleContext";
+import { ArticleContext } from "../../articles/ArticleContext";
 import ReportItem from "../ReportItem";
 import Image from "next/image";
 import axios from "axios";
-import { headers } from "next/headers";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -20,51 +18,87 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
     throw new Error("ArticleContext must be used within an ArticleProvider");
   }
   const { state, dispatch } = articleContext;
+  const [review, setReview] = useState<any>(null);
   const [report, setReport] = useState<any>(null);
 
-  // Get the report detail
+  const fetchReport = async (reportId: string) => {
+    try {
+      console.log("here", reportId);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reports/${reportId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = response.data.data;
+      setReport(data.report);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  // Get the review detail
   useEffect(() => {
-    const fetchReport = async () => {
+    const fetchreview = async () => {
       try {
         const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/reports/${params.id}`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/${params.id}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           }
         );
-        const data = response.data;
-        setReport(data.data.report);
+        const data = response.data.data;
+        setReview(data);
+        fetchReport(data.report._id);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchReport();
+    fetchreview();
   }, [params.id]);
 
-  // Update state with fetched report data
+  // Update state with fetched review data
   useEffect(() => {
-    if (report) {
-      dispatch({ type: "SET_TITLE", payload: report.content_id.title });
-      dispatch({ type: "SET_COUNTRY", payload: report.content_id.country });
-      dispatch({ type: "SET_CONTENT", payload: report.content_id.content });
-      const transformedCategories = report.content_id.categories.map(
-        (category: string) => ({ name: category })
-      );
-      dispatch({ type: "SET_CATEGORIES", payload: transformedCategories });
+    if (review) {
+      dispatch({
+        type: "SET_TITLE",
+        payload: review.temp_history_id?.title ?? review.content_id.title,
+      });
+      dispatch({
+        type: "SET_COUNTRY",
+        payload: review.temp_history_id?.country ?? review.content_id.country,
+      });
+      dispatch({
+        type: "SET_CONTENT",
+        payload: review.temp_history_id?.content ?? review.content_id.content,
+      });
+      dispatch({
+        type: "SET_CATEGORIES",
+        payload:
+          review.temp_history_id?.categories.join(", ") ??
+          review.content_id.categories.join(", "),
+      });
       dispatch({
         type: "SET_SOURCES",
-        payload: report.content_id.sources.join(", "),
+        payload:
+          review.temp_history_id?.sources.join(", ") ??
+          review.content_id.sources.join(", "),
       });
-      dispatch({ type: "SET_IMAGE_URL", payload: report.content_id.imageUrl });
+      // dispatch({ type: "SET_IMAGE_URL", payload: review.content_id.imageUrl });
       dispatch({
         type: "SET_START_YEAR",
-        payload: report.content_id.start_year,
+        payload:
+          review.temp_history_id?.start_year ?? review.content_id.start_year,
       });
-      dispatch({ type: "SET_END_YEAR", payload: report.content_id.end_year });
+      dispatch({
+        type: "SET_END_YEAR",
+        payload: review.temp_history_id?.end_year ?? review.content_id.end_year,
+      });
     }
-  }, [report, dispatch]);
+  }, [review, dispatch]);
 
   const handleStartYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -96,9 +130,10 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
     dispatch({ type: "SET_CONTENT", payload: value });
   };
 
-  const handleCategoryChange = (e: any) => {
-    const selectedCategories = e.value;
-    dispatch({ type: "SET_CATEGORIES", payload: selectedCategories });
+  const handleCategoryChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const values = event.target.value;
+    const categories = values.split(",");
+    dispatch({ type: "SET_CATEGORIES", payload: categories });
   };
 
   const handleSourcesChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
@@ -152,51 +187,10 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
     "image",
   ];
 
-  const _categories = [
-    { name: "War", id: 1 },
-    { name: "Science", id: 2 },
-    { name: "Technology", id: 3 },
-    { name: "Health", id: 4 },
-    { name: "Politics", id: 7 },
-    { name: "Business", id: 8 },
-    { name: "city", id: 9 },
-    { name: "event", id: 10 },
-    { name: "institution", id: 11 },
-    { name: "battle", id: 12 },
-    { name: "Lifestyle", id: 13 },
-    { name: "Music", id: 14 },
-    { name: "Art", id: 15 },
-    { name: "Environment", id: 16 },
-    { name: "Weather", id: 17 },
-    { name: "Economy", id: 18 },
-    { name: "Agriculture", id: 19 },
-    { name: "Energy", id: 20 },
-    { name: "architecture", id: 21 },
-  ];
-
-  const handleSubmit = () => {
-    console.log("submitted data", state);
-  };
-
-  const handleSave = async () => {
+  const handleSubmit = async () => {
     try {
-      // First request to create the review
-      const response1 = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${report._id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-  
-      // Extract the review ID from the first response
-      const reviewId = response1.data._id;
-  
-      // Second request to save the review history
-      const response2 = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/save/${reviewId}`,
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/submit/${review._id}`,
         {
           title: state.title,
           content: state.content,
@@ -204,7 +198,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           start_year: state.startYear,
           end_year: state.endYear,
           sources: state.sources,
-          categories: state.categories.map((category) => category.name),
+          categories: state.categories,
         },
         {
           headers: {
@@ -212,18 +206,40 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           },
         }
       );
-  
+    } catch (error) {
+      console.error("Error in handleSubmit:", error);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const response2 = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/save/${review._id}`,
+        {
+          title: state.title,
+          content: state.content,
+          country: state.country,
+          start_year: state.startYear,
+          end_year: state.endYear,
+          sources: state.sources,
+          categories: state.categories,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
       console.log(response2.data);
     } catch (error) {
       console.error("Error in handleSave:", error);
-      // Handle error accordingly
     }
   };
-  
 
   return (
     <div className="lg:px-56">
-      <div className="flex flex-col gap-5 p-10">
+      <div className="flex flex-col gap-5 pt-10 pb-3">
         <h1 className="text-white text-3xl text-center font-bold">
           Edit Reported Article
         </h1>
@@ -232,9 +248,10 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
             title={report?.title}
             description={report?.reason}
             reportDate={report?.createdAt}
+            deadline={review?.due_date}
           />
         )}
-        <div className="flex w-full items-center justify-center">
+        {/* <div className="flex w-full items-center justify-center">
           <label
             htmlFor="fileInput"
             className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -284,7 +301,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
               id="fileInput"
             />
           </label>
-        </div>
+        </div> */}
 
         <div className="flex gap-5">
           <div className="basis-2/3 flex flex-col">
@@ -320,13 +337,13 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
                 Categories
               </h2>
               <div className="p-3">
-                <MultiSelect
+                <TextInput
+                  id="categories"
+                  placeholder="Put your categories here separated by commas"
                   value={state.categories}
+                  type="text"
+                  className="rounded-none text-red-500"
                   onChange={handleCategoryChange}
-                  options={_categories}
-                  optionLabel="name"
-                  placeholder="Select Categories"
-                  maxSelectedLabels={5}
                 />
               </div>
             </div>

@@ -44,7 +44,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         `${process.env.NEXT_PUBLIC_BASE_URL}/reports`,
         {
           reason: reason,
-          contentId: id,
+          content_id: id,
           type: "History",
           title: event.title,
         },
@@ -66,18 +66,17 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
   };
 
   return (
-    <>
-      <div className="text-white min-h-72">
-        {event.image && (
-          <Image
-            // src="http://res.cloudinary.com/dr2n0j4ls/image/upload/v1/histori-flags/4426610795937015821"
-            src={event.image}
-            alt="Picture of the article"
-            width={100}
-            height={100}
-            className="w-full h-56 object-fill rounded-lg"
-          />
-        )}
+    <div className="text-white min-h-72">
+      {event.image && (
+        <Image
+          src={event.image}
+          alt="Picture of the article"
+          width={100}
+          height={100}
+          className="w-full h-56 object-fill rounded-lg"
+        />
+      )}
+      <div className="sticky top-0 z-10">
         <div className="flex justify-between">
           <h1 className="p-2 text-xl font-bold ">{event.title}</h1>
           <div className="self-center">
@@ -118,12 +117,10 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
             <Tag name={tag} key={idx} />
           ))}
         </div>
-        <div className="p-2 no-scrollbar">
-          <div className="space-y-6">
-            <p className="text-sm leading-relaxed max-h-[70vh] text-white no-scrollbar">
-              {event.content}
-            </p>
-          </div>
+      </div>
+      <div className="p-2 overflow-y-auto max-h-[60vh]">
+        <div className="space-y-6">
+          <p className="text-sm leading-relaxed text-white">{event.content}</p>
         </div>
       </div>
       <div className="mx-5 flex gap-9 justify-end">
@@ -158,7 +155,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         </Modal>
       </div>
       <Toast ref={toast} position="top-center" />
-    </>
+    </div>
   );
 };
 

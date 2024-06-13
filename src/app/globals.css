@@ -105,3 +105,15 @@ body {
   /* for dropdown */
   color: #444 !important;
 }
+/* Apply custom scrollbar styles to all scrollable elements */
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: rgba(136, 136, 136, 0.8);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #3b3b3b;
+  border-radius: 3px;
+
+}
