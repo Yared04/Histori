@@ -5,7 +5,7 @@ import ClientComponent from "../components/ClientComponent";
 const Articles = () => {
   return (
     <div className="px-20 pt-10">
-      <AddArticle />
+      {/* <AddArticle /> */}
     </div>
   );
 };
