@@ -1,10 +1,10 @@
 "use client";
 import { Button, TextInput } from "flowbite-react";
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import { ArticleContext } from "./ArticleContext";
-import ReportItem from "../reviews/./ReportItem";
+import { Toast } from "primereact/toast";
 import Image from "next/image";
 import axios from "axios";
 
@@ -12,93 +12,32 @@ const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
 
-const GiveReview = ({ params }: { params: { id: string } }) => {
+const CreateArticle = () => {
   const articleContext = useContext(ArticleContext);
   if (!articleContext) {
     throw new Error("ArticleContext must be used within an ArticleProvider");
   }
   const { state, dispatch } = articleContext;
-  const [review, setReview] = useState<any>(null);
-  const [report, setReport] = useState<any>(null);
+  const toast = useRef<Toast>(null);
 
-  const fetchReport = async (reportId: string) => {
-    try {
-      console.log("here", reportId);
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reports/${reportId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = response.data.data;
-      setReport(data.report);
-    } catch (error) {
-      console.error(error);
-    }
+  const showSuccess = () => {
+    toast.current?.show({
+      severity: "success",
+      summary: "Success",
+      detail: "Report Submitted!",
+      life: 2000,
+    });
   };
-  // Get the review detail
-  useEffect(() => {
-    const fetchreview = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/${params.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        const data = response.data.data;
-        setReview(data);
-        fetchReport(data.report._id);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchreview();
-  }, [params.id]);
 
-  // Update state with fetched review data
-  useEffect(() => {
-    if (review) {
-      dispatch({
-        type: "SET_TITLE",
-        payload: review.temp_history_id?.title ?? review.content_id.title,
-      });
-      dispatch({
-        type: "SET_COUNTRY",
-        payload: review.temp_history_id?.country ?? review.content_id.country,
-      });
-      dispatch({
-        type: "SET_CONTENT",
-        payload: review.temp_history_id?.content ?? review.content_id.content,
-      });
-      dispatch({
-        type: "SET_CATEGORIES",
-        payload:
-          review.temp_history_id?.categories.join(", ") ??
-          review.content_id.categories.join(", "),
-      });
-      dispatch({
-        type: "SET_SOURCES",
-        payload:
-          review.temp_history_id?.sources.join(", ") ??
-          review.content_id.sources.join(", "),
-      });
-      // dispatch({ type: "SET_IMAGE_URL", payload: review.content_id.imageUrl });
-      dispatch({
-        type: "SET_START_YEAR",
-        payload:
-          review.temp_history_id?.start_year ?? review.content_id.start_year,
-      });
-      dispatch({
-        type: "SET_END_YEAR",
-        payload: review.temp_history_id?.end_year ?? review.content_id.end_year,
-      });
-    }
-  }, [review, dispatch]);
+  const showError = (detail: string) => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Error",
+      detail: detail === "Server Error" ? "There are some problems in the data" : detail,
+      life: 2000,
+    });
+  };
+
 
   const handleStartYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -190,15 +129,13 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/submit/${review._id}`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/histories`,
         {
           title: state.title,
           content: state.content,
           country: state.country,
-          start_year: state.startYear,
-          end_year: state.endYear,
-          sources: state.sources,
           categories: state.categories,
+          sources: state.sources,
         },
         {
           headers: {
@@ -206,51 +143,22 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           },
         }
       );
-    } catch (error) {
-      console.error("Error in handleSubmit:", error);
-    }
-  };
-
-  const handleSave = async () => {
-    try {
-      const response2 = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/save/${review._id}`,
-        {
-          title: state.title,
-          content: state.content,
-          country: state.country,
-          start_year: state.startYear,
-          end_year: state.endYear,
-          sources: state.sources,
-          categories: state.categories,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      console.log(response2.data);
-    } catch (error) {
-      console.error("Error in handleSave:", error);
+      console.log(response);
+      showSuccess();   
+      dispatch({ type: "RESET" });   
+    } catch (error: any) {
+      console.error(error);
+      showError(error.response.data.message);
     }
   };
 
   return (
-    <div className="lg:px-56">
+    <div className="lg:px-56 min-h-[91.5vh]">
       <div className="flex flex-col gap-5 pt-10 pb-3">
         <h1 className="text-white text-3xl text-center font-bold">
-          Edit Reported Article
+          Create Article
         </h1>
-        {report !== null && (
-          <ReportItem
-            title={report?.title}
-            description={report?.reason}
-            reportDate={report?.createdAt}
-            deadline={review?.due_date}
-          />
-        )}
+
         {/* <div className="flex w-full items-center justify-center">
           <label
             htmlFor="fileInput"
@@ -323,7 +231,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
             />
             <ReactQuill
               value={state.content}
-              className="my-3 border-gray-500 h-[17rem] rounded-lg bg-white"
+              className="my-3 border-gray-500 h-[16.2rem] rounded-lg bg-white"
               onChange={handleContentChange}
               placeholder={"Write something..."}
               modules={modules}
@@ -383,16 +291,14 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           </div>
         </div>
         <div className="flex justify-end gap-5 z-10">
-          <Button onClick={handleSave} color="warning">
-            Save Progress
-          </Button>{" "}
           <Button onClick={handleSubmit} color="blue">
             Submit
           </Button>
         </div>
       </div>
+      <Toast ref={toast} position="top-center" />
     </div>
   );
 };
 
-export default GiveReview;
+export default CreateArticle;

@@ -13,34 +13,42 @@ const Header = () => {
     setCurUser!(null);
   };
   return (
-    <div className="h-12 z-10 bg-zinc-800 opacity-65 hover:opacity-100 text-white flex py-3 px-8">
-      <div className="basis-1/2 flex gap-8">
-        <button
+    <div className="font-normal text-sm cursor-pointer h-10 z-10 bg-gray-50 opacity-65 hover:opacity-95 flex py-1 px-8">
+      <div className="basis-1/3">
+        <h1
           onClick={() => {
             router.push("/");
           }}
-          className="text-white font-normal cursor-pointer text-lg"
+          className="cursor-pointer font-semibold text-2xl"
         >
-          Home
-        </button>
+          HISTOR<span className="text-blue-600">I</span>
+        </h1>
+      </div>
+      <div className="basis-1/3 flex justify-end gap-8">
         <button
           onClick={() => {
             router.push("/globe");
           }}
-          className="text-white font-normal cursor-pointer text-lg"
         >
           Globe
         </button>
+        <button
+          onClick={() => {
+            router.push("/articles");
+          }}
+        >
+          Create Article
+        </button>
       </div>
-      <div className="basis-1/2 flex justify-end">
+      <div className="basis-1/3 flex justify-end">
         {curUser ? (
-          <div onClick={() => {}} className="cursor-pointer">
+          <div onClick={() => {}} className="cursor-pointer pt-1">
             <Dropdown
               label=""
               size="sm"
               dismissOnClick={false}
               renderTrigger={() => (
-                <span>
+                <span className="">
                   <Avatar
                     placeholderInitials={curUser?.email
                       ?.charAt(0)
