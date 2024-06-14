@@ -1,7 +1,6 @@
 "use client";
 import * as React from "react";
 import { useState, useCallback } from "react";
-import { createRoot } from "react-dom/client";
 import Map from "react-map-gl";
 import DrawControl from "./DrawControl";
 import ControlPanel from "./ControlPanel";
