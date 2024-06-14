@@ -1,5 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import Loading from "@/app/components/Loading";
+import { Toast } from "primereact/toast";
+import React, {
+  useState,
+  useEffect,
+  useTransition,
+  startTransition,
+} from "react";
 import { FiLock, FiUnlock } from "react-icons/fi";
 
 function ControlPanel(props: any) {
@@ -9,6 +16,9 @@ function ControlPanel(props: any) {
   const [endYear, setEndYear] = useState("");
   const [startEra, setStartEra] = useState("AD");
   const [endEra, setEndEra] = useState("AD");
+  const [error, setError] = useState<string>();
+  const [success, setSuccess] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const formattedGeoJson = JSON.stringify(props.polygons, null, 2);
 
@@ -28,6 +38,54 @@ function ControlPanel(props: any) {
     setEndYear(e.target.value);
   };
 
+  const handleSubmit = async () => {
+    setError("");
+
+    startTransition(async () => {
+      const startPeriod = handleYearChange(startYear, startEra);
+      const endPeriod = handleYearChange(endYear, endEra);
+
+      const geoJsonData = {
+        startPeriod,
+        endPeriod,
+        map: {
+          properties: {
+            NAME: name,
+          },
+          geometry: {
+            coordinates: props.polygons[0]?.geometry.coordinates, // Assuming polygons have a 'coordinates' property
+            type: props.polygons[0]?.geometry.type, // Assuming polygons have a 'type' property
+          },
+        },
+      };
+
+      try {
+        const response = await fetch(
+          process.env.NEXT_PUBLIC_BASE_URL + "/map",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(geoJsonData),
+          }
+        );
+
+        if (!response.ok) {
+          const responseBody = await response.json();
+          setError(
+            responseBody.message || "An error occurred. Please try again."
+          );
+        }
+
+        const result = await response.json();
+        setSuccess(true);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    });
+  };
+
   return (
     <div
       className={`control-panel absolute top-20 left-5 max-h-[90%] overflow-y-scroll z-10 bg-white w-[25%] shadow-lg px-8 py-6 pointer-events-auto rounded-lg border-2 border-gray-200 transition-transform ${
@@ -43,19 +101,13 @@ function ControlPanel(props: any) {
           {isVisible ? "Hide" : "Show"}
         </button>
       </div>
-      {/* {polygonArea > 0 ? (
-        <>
-          <p className="text-gray-600 mb-4">
-            {Math.round(polygonArea * 100) / 100} <br />
-            square meters
-          </p>
-        </>
-      ) : (
-        <p className="text-gray-600 mb-4">No area calculated yet</p>
-      )} */}
-
       <div className="input-fields bg-gray-100 p-4 rounded-md mb-4">
         <h4 className="font-semibold text-md text-gray-700 mb-2">Details</h4>
+
+        <p className="text-red-500 text-xs py-2">{error}</p>
+        {success && (
+          <p className="text-green-500 text-md py-2">{"Successfuly Added"}</p>
+        )}
 
         <div className="mb-4">
           <label htmlFor="name" className="block text-gray-700 mb-2">
@@ -127,6 +179,14 @@ function ControlPanel(props: any) {
       <pre className="text-xs bg-gray-200 p-2 rounded-md overflow-auto">
         {formattedGeoJson}
       </pre>
+      {formattedGeoJson && (
+        <button
+          onClick={!isPending ? handleSubmit : () => {}}
+          className="mt-4 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition flex justify-center"
+        >
+          {isPending ? <Loading /> : "Add"}
+        </button>
+      )}
     </div>
   );
 }
