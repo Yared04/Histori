@@ -70,7 +70,7 @@ const Header = () => {
                 </span>
               )}
             >
-              <Dropdown.Item className="" onClick={() => {}}>
+              <Dropdown.Item className="" onClick={() => {router.push('/profile')}}>
                 Profile
               </Dropdown.Item>
               <Dropdown.Item className="text-red-600" onClick={handleLogout}>
