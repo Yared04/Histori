@@ -243,7 +243,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
   return (
     <>
       <Header />
-      <div className="lg:px-56">
+      <div className="lg:px-56 min-h-[91.5vh]">
         <div className="flex flex-col gap-5 pt-10 pb-3">
           <h1 className="text-white text-3xl text-center font-bold">
             Edit Reported Article

@@ -159,7 +159,7 @@ const CreateArticle = () => {
           Create Article
         </h1>
 
-        {/* <div className="flex w-full items-center justify-center">
+        <div className="flex w-full items-center justify-center">
           <label
             htmlFor="fileInput"
             className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
@@ -209,7 +209,7 @@ const CreateArticle = () => {
               id="fileInput"
             />
           </label>
-        </div> */}
+        </div>
 
         <div className="flex gap-5">
           <div className="basis-2/3 flex flex-col">
