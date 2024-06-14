@@ -24,12 +24,15 @@ const ProfileCard:React.FC<ProfileCardProps> = (props) => {
 
   const handleClaimReview = async () => {
     try {
-      const response = await axios.post( `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
-      router.push(`/articles/${props.id}`)
+      );
+      router.push(`/reviews/${props.id}`)
       console.log(response);
     } catch (error) {
       console.log(error);

@@ -14,13 +14,14 @@ const Profile = () => {
   const [search, setSearch] = useState('')
   const hanldeBecomeContributor = async () => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/users/contributor`, {}, {
-        
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/users/contributor`,
+        {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-        
-      });
+        }
+      );
       console.log(response);
     } catch (error) {
       console.log(error);
@@ -29,12 +30,16 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('https://histori-backend.onrender.com/api/v1/reports?type=History', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      setReports(result.data.data.reports);
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reports?type=History`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setReports(response.data.data.reports);
     };
 
     fetchData();
