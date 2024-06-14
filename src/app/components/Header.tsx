@@ -40,6 +40,14 @@ const Header = () => {
         >
           Create Article
         </button>
+
+        <button
+          onClick={() => {
+            router.push("/globe/contribute/map");
+          }}
+        >
+          Add Map
+        </button>
       </div>
       <div className="basis-1/3 flex justify-end">
         {curUser ? (
@@ -78,7 +86,7 @@ const Header = () => {
             className="font-normal cursor-pointer text-sm"
           >
             <div className="flex gap-0.5">
-              <IoMdLogIn className="self-center" size={20}/>
+              <IoMdLogIn className="self-center" size={20} />
               <span>Login</span>
             </div>
           </button>
