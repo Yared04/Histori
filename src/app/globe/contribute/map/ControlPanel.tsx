@@ -30,7 +30,7 @@ function ControlPanel(props: any) {
 
   return (
     <div
-      className={`control-panel absolute top-5 left-5 max-h-[90%] overflow-y-scroll z-10 bg-white w-[25%] shadow-lg px-8 py-6 pointer-events-auto rounded-lg border-2 border-gray-200 transition-transform ${
+      className={`control-panel absolute top-20 left-5 max-h-[90%] overflow-y-scroll z-10 bg-white w-[25%] shadow-lg px-8 py-6 pointer-events-auto rounded-lg border-2 border-gray-200 transition-transform ${
         isVisible ? "transform scale-100" : "transform scale-0"
       }`}
     >
@@ -112,7 +112,18 @@ function ControlPanel(props: any) {
           </div>
         </div>
       </div>
-      <h4 className="font-semibold text-md text-gray-700 mb-2">GeoJSON Data</h4>
+      <h4 className="font-semibold text-md text-gray-700 mb-2 justify-between flex">
+        <span>GeoJSON Data</span>
+        <div
+          onClick={() => {
+            props.setClear(false);
+            props.setClear(true);
+          }}
+          className="cursor-pointer text-xs font-normal"
+        >
+          Clear
+        </div>
+      </h4>
       <pre className="text-xs bg-gray-200 p-2 rounded-md overflow-auto">
         {formattedGeoJson}
       </pre>
