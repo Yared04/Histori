@@ -17,7 +17,9 @@ const Landing = ({
   };
 
   useEffect(() => {
-    setShowLogin!(true);
+    const loggedIn = localStorage.getItem("token");
+    if (loggedIn) setShowLogin!(false);
+    else setShowLogin!(true);
   }, []);
 
   return (
