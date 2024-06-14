@@ -1,21 +1,26 @@
 "use client";
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
-import ProfileCard from "../components/ProfileCard";
-import ProfileImageInput from "../components/ProfileImageInput";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import ProfileCard from "./ProfileCard";
+import ProfileImageInput from "./ProfileImageInput";
 import ClientComponent from "../components/ClientComponent";
 import { userContext } from "../auth/UserContext";
 import { useRouter } from "next-nprogress-bar";
 import Loading from "../components/Loading";
-import { Avatar } from "flowbite-react";
+import { Avatar, Tabs, TabsRef } from "flowbite-react";
+import { HiUserCircle } from "react-icons/hi";
+import ReviewCard from "./ReviewCard";
 
 const Profile = () => {
   const { curUser, setCurUser } = useContext(userContext);
   const [reports, setReports] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [myDraft, setMyDraft] = useState(false);
   const [search, setSearch] = useState("");
+  const tabsRef = useRef<TabsRef>(null);
+
   const hanldeBecomeContributor = async () => {
     try {
       setLoading(true);
@@ -35,6 +40,20 @@ const Profile = () => {
     } catch (error) {
       console.log(error);
     }
+    setLoading(false);
+  };
+
+  const fetchReviews = async () => {
+    setLoading(true);
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/type/History`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    setReviews(response.data.data);
     setLoading(false);
   };
 
@@ -59,74 +78,101 @@ const Profile = () => {
     };
 
     fetchData();
+    fetchReviews();
   }, [curUser, myDraft]);
   return (
     curUser && (
       <ClientComponent>
-        <div className=" text-black  min-h-[100vh] relative">
-          <button
-            onClick={() => router.push("/articles")}
-            title="create an article"
-            className="fixed bottom-12 right-10 z-50 flex justify-center shadow-xl cursor-pointer bg-blue-700 w-[3rem] h-[3rem] text-white text-[3rem] rounded-full"
-          >
-            <span className="self-center mb-2">+</span>
-          </button>
-          <div className="w-fit mx-auto mt-5 text-center">
-            {/* <ProfileImageInput /> */}
-            <span className="">
-              <Avatar
-                placeholderInitials={curUser?.email?.charAt(0).toUpperCase()}
-                size={"md"}
-                rounded
-                bordered
-                color="purple"
-              />
-            </span>
-            <p className=" text-2xl font-bold">{curUser.email}</p>
-            <p>{curUser.role}</p>
-          </div>
-          {curUser.role === "contributor" ? (
-            <div className="cursor-pointer flex items-center justify-end gap-1">
-              <input
-                onChange={(e) => setMyDraft(e.target.checked)}
-                type="checkbox"
-              />
-              <p className="text-right text-sm">My reports only</p>
+        <div className="flex flex-col gap-5 h-full">
+          <div className="sticky top-0 z-10">
+            <button
+              onClick={() => router.push("/articles")}
+              title="create an article"
+              className="fixed bottom-14 right-11 z-50 flex justify-center shadow-xl cursor-pointer bg-blue-700 w-[3rem] h-[3rem] text-white text-[3rem] rounded-full"
+            >
+              <span className="self-center mb-2">+</span>
+            </button>
+            <div className="w-fit flex flex-col gap-1 mx-auto mt-5 text-center">
+              {/* <ProfileImageInput /> */}
+              <span className="">
+                <Avatar
+                  placeholderInitials={curUser?.email?.charAt(0).toUpperCase()}
+                  size={"md"}
+                  rounded
+                  bordered
+                  color="purple"
+                />
+              </span>
+              <p className=" text-2xl font-bold">{curUser.email}</p>
+              <p>{curUser.role}</p>
             </div>
-          ) : (
-            <div className="cursor-pointer ml-auto border rounded-md w-fit px-2 py-2 border-gray-400 hover:bg-blue-500 hover:text-white">
-              <p
-                title="After becoming a contributor you will be able to suggest edit to articles"
-                className="text-right"
-                onClick={hanldeBecomeContributor}
+            {curUser.role === "contributor" ? (
+              <div className="cursor-pointer flex items-center justify-end gap-1">
+                <input
+                  onChange={(e) => setMyDraft(!myDraft)}
+                  type="checkbox"
+                />
+                <p className="text-right text-sm">My reports only</p>
+              </div>
+            ) : (
+              <div className="cursor-pointer ml-auto border rounded-md w-fit px-2 py-2 border-gray-400 hover:bg-blue-500 hover:text-white">
+                <p
+                  title="After becoming a contributor you will be able to suggest edit to articles"
+                  className="text-right"
+                  onClick={hanldeBecomeContributor}
+                >
+                  Become a Contributor
+                </p>
+              </div>
+            )}
+
+            <Tabs
+              aria-label="Default tabs"
+              style="default"
+              ref={tabsRef}
+            >
+              <Tabs.Item
+                active
+                title={
+                  curUser.role === "contributor"
+                    ? "Reported Articles"
+                    : "My Reports"
+                }
               >
-                Become a Contributor
-              </p>
-            </div>
-          )}
-          <div className="flex justify-between pt-3 ">
-            <div>
-              <p className="text-2xl font-semibold">
-                {curUser.role === "contributor"
-                  ? "Reported Articles"
-                  : "My Reports"}
-              </p>
-              {/* <div className="flex gap-3">
-            <p className=" ">Map</p>
-            <div className="border border-black"></div>
-            <p>History</p>
-          </div> */}
-            </div>
-            {/* <div>
-          <p className="text-2xl font-semibold">My Review</p>
-          <div className="flex gap-3">
-            <p>Map</p>
-            <div className="border border-black"></div>
-            <p>History</p>
-          </div>
-        </div> */}
-          </div>
-          {/* {curUser.role === "contributor" && (
+                <div className="overflow-auto h-full">
+                  {reports?.map((report: any) => {
+                    return (
+                      <ProfileCard
+                        key={report._id}
+                        id={report._id}
+                        title={report.content_id?.[0]?.title || ""}
+                        body={report.content_id?.[0]?.content || ""}
+                        date={report.updatedAt}
+                        status={report.status}
+                      />
+                    );
+                  })}
+                </div>
+              </Tabs.Item>
+              <Tabs.Item title="My Reviews">
+                <div className="overflow-auto h-full">
+                  {reviews?.map((review: any) => {
+                    return (
+                      <ReviewCard
+                        key={review._id}
+                        id={review._id}
+                        title={review.content_id.title}
+                        status={review.status}
+                        type={review.type}
+                        dueDate={review.due_date}
+                      />
+                    );
+                  })}
+                </div>
+              </Tabs.Item>
+            </Tabs>
+
+            {/* {curUser.role === "contributor" && (
             <div className="flex gap-2">
               <div className="flex items-center w-[80%] max-w-lg">
                 <label htmlFor="simple-search" className="sr-only">
@@ -175,27 +221,9 @@ const Profile = () => {
                 placeholder=" "
               />
             </div>
-          )} */}
-          {loading ? (
-            <div className="flex justify-center items-center w-full h-[50vh] ">
-              <Loading />
-            </div>
-          ) : (
-            <div className="pt-5">
-              {reports?.map((report: any) => {
-                return (
-                  <ProfileCard
-                    key={report._id}
-                    id={report._id}
-                    title={report.content_id?.[0]?.title || ""}
-                    reportTitle={report.title}
-                    body={report.content_id?.[0]?.content || ""}
-                    date={report.updatedAt}
-                  />
-                );
-              })}
-            </div>
-          )}
+             )} */}
+          </div>
+          
         </div>
       </ClientComponent>
     )
