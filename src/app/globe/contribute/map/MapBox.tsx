@@ -5,8 +5,6 @@ import ControlPanel from "./ControlPanel";
 import ReferenceImage from "./ReferenceImage";
 import ReferenceImageControl from "./ReferenceImageControl";
 import dynamic from "next/dynamic";
-import Header from "@/app/components/Header";
-import { Footer } from "flowbite-react";
 
 const Map = dynamic(() => import("react-map-gl"), {
   ssr: false,
@@ -45,13 +43,7 @@ export default function MapBox() {
   }, []);
 
   return (
-    <div className="w-screen h-screen flex overflow-hidden relative">
-      <div className="absolute top-0 z-10 w-screen">
-        <Header />
-      </div>
-      <div className="absolute bottom-0 z-50 w-screen">
-        <Footer />
-      </div>
+    <div className="h-[91.5vh] flex overflow-hidden relative">
       <ControlPanel
         polygons={Object.values(features)}
         setPolygons={setFeatures}

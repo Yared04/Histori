@@ -7,5 +7,11 @@ const MapBox = dynamic(() => import("./MapBox"), {
 });
 
 export default function page() {
-  return <MapBox />;
+  return (
+    <>
+      <Header />
+      <MapBox />
+      <Footer />
+    </>
+  );
 }
