@@ -25,7 +25,7 @@ const ProfileCard:React.FC<ProfileCardProps> = (props) => {
 
   const handleClaimReview = async () => {
     try {
-      const response = await axios.post( `https://histori-backend.onrender.com/api/v1/reviews/report/${props.id}`, {}, {
+      const response = await axios.post( `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         }

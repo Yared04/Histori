@@ -15,7 +15,7 @@ const Profile = () => {
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjIwZDQ4NmZiMDczMTAzZmM3NWQwMzYiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJEb2UiLCJlbWFpbCI6ImdtYWlsQGdtYWlsLmNvbSIsInJvbGUiOiJjb250cmlidXRvciIsImlhdCI6MTcxODMxMTg0MiwiZXhwIjoxNzI2MDg3ODQyfQ.TNKItursk93jCn84xm3Zeh5vk4JyTJdlm_N7aAjeFdQ';
   const hanldeBecomeContributor = async () => {
     try {
-      const response = await axios.post('https://histori-backend.onrender.com/api/v1/users/contributor', {}, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/users/contributor`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
