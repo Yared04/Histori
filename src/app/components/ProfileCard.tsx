@@ -1,46 +1,51 @@
 "use client";
 import React, { useState } from "react";
 import ClaimReviewPopup from "./ClaimReviewPopup";
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
+import axios from "axios";
+import { useRouter } from "next-nprogress-bar";
 
 interface ProfileCardProps {
-  title:string;
-  reportTitle:string;
-  body:string;
-  date:string;
-  id:string;
+  title: string;
+  reportTitle: string;
+  body: string;
+  date: string;
+  id: string;
 }
-const ProfileCard:React.FC<ProfileCardProps> = (props) => {
+const ProfileCard: React.FC<ProfileCardProps> = (props) => {
   const [showMore, setShowMore] = useState(false);
   const router = useRouter();
   const [textToShow, setTextToShow] = useState(props.body.slice(0, 100));
   const [textToHide, setTextToHide] = useState(props.body);
   const [popDisplay, setPopDisplay] = useState(false);
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   const handleClaimReview = async () => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`,{},
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`,
+        {},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      router.push(`/reviews/${props.id}`)
+      router.push(`/reviews/${props.id}`);
       console.log(response);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
   return (
-    <div className="  border-gray-400 shadow hover:shadow-lg px-3 py-2 mt-3 rounded-md">
-      <div className="cursor-pointer" onClick={()=>setPopDisplay(true)}>
+    <div className="  border-gray-400 shadow hover:shadow-lg px-3 py-2 mt-3 min-h-32 rounded-md">
+      <div className="cursor-pointer" onClick={() => setPopDisplay(true)}>
         <div className="flex justify-between">
           <p className="font-medium">{props.title}</p>
           {/* <button className="flex gap-[.1rem]">
@@ -75,9 +80,12 @@ const ProfileCard:React.FC<ProfileCardProps> = (props) => {
           )}
         </p>
       </div>
-      {
-        popDisplay && <ClaimReviewPopup handleClaimReview={handleClaimReview} setConfirm={setPopDisplay} />
-      }
+      {popDisplay && (
+        <ClaimReviewPopup
+          handleClaimReview={handleClaimReview}
+          setConfirm={setPopDisplay}
+        />
+      )}
     </div>
   );
 };

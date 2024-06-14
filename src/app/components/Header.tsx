@@ -38,7 +38,7 @@ const Header = () => {
             router.push("/articles");
           }}
         >
-          Create Article
+          Contribute Article
         </button>
 
         <button
@@ -46,7 +46,7 @@ const Header = () => {
             router.push("/globe/contribute/map");
           }}
         >
-          Add Map
+          Contribute Map
         </button>
       </div>
       <div className="basis-1/3 flex justify-end">

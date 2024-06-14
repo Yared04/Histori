@@ -5,7 +5,7 @@ import ProfileCard from "../components/ProfileCard";
 import ProfileImageInput from "../components/ProfileImageInput";
 import ClientComponent from "../components/ClientComponent";
 import { userContext } from "../auth/UserContext";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import Loading from "../components/Loading";
 import { Avatar } from "flowbite-react";
 
@@ -41,7 +41,10 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const reportEndpoint = (curUser.role === "contributor" && !myDraft) ? "/reports/all/?type=History" : "/reports?type=History";
+      const reportEndpoint =
+        curUser?.role === "contributor" && !myDraft
+          ? "/reports/all/?type=History"
+          : "/reports?type=History";
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}${reportEndpoint}`,
@@ -52,7 +55,6 @@ const Profile = () => {
         }
       );
       setReports(response.data.data.reports);
-      console.log(response.data.data.reports);
       setLoading(false);
     };
 
@@ -62,33 +64,34 @@ const Profile = () => {
     curUser && (
       <ClientComponent>
         <div className=" text-black  min-h-[100vh] relative">
-          <div
+          <button
             onClick={() => router.push("/articles")}
             title="create an article"
-            className="fixed bottom-12 right-10 z-50 flex items-center justify-center  cursor-pointer bg-blue-400 w-[3rem] h-[3rem] text-center text-white text-[3rem] rounded-full"
+            className="fixed bottom-12 right-10 z-50 flex justify-center shadow-xl cursor-pointer bg-blue-700 w-[3rem] h-[3rem] text-white text-[3rem] rounded-full"
           >
-            <div>+</div>
-          </div>
+            <span className="self-center mb-2">+</span>
+          </button>
           <div className="w-fit mx-auto mt-5 text-center">
             {/* <ProfileImageInput /> */}
             <span className="">
-                  <Avatar
-                    placeholderInitials={curUser?.email
-                      ?.charAt(0)
-                      .toUpperCase()}
-                    size={"md"}
-                    rounded
-                    bordered
-                    color="purple"
-                  />
-                </span>
+              <Avatar
+                placeholderInitials={curUser?.email?.charAt(0).toUpperCase()}
+                size={"md"}
+                rounded
+                bordered
+                color="purple"
+              />
+            </span>
             <p className=" text-2xl font-bold">{curUser.email}</p>
             <p>{curUser.role}</p>
           </div>
           {curUser.role === "contributor" ? (
-            <div className="cursor-pointer flex items-center justify-end gap-2">
-              <input onChange={(e)=>setMyDraft(e.target.checked)} type="checkbox" />
-              <p className="text-right">show only my drafts</p>
+            <div className="cursor-pointer flex items-center justify-end gap-1">
+              <input
+                onChange={(e) => setMyDraft(e.target.checked)}
+                type="checkbox"
+              />
+              <p className="text-right text-sm">My reports only</p>
             </div>
           ) : (
             <div className="cursor-pointer ml-auto border rounded-md w-fit px-2 py-2 border-gray-400 hover:bg-blue-500 hover:text-white">
@@ -101,7 +104,7 @@ const Profile = () => {
               </p>
             </div>
           )}
-          <div className="flex justify-between py-3 ">
+          <div className="flex justify-between pt-3 ">
             <div>
               <p className="text-2xl font-semibold">
                 {curUser.role === "contributor"
@@ -123,7 +126,7 @@ const Profile = () => {
           </div>
         </div> */}
           </div>
-          {curUser.role === "contributor" && (
+          {/* {curUser.role === "contributor" && (
             <div className="flex gap-2">
               <div className="flex items-center w-[80%] max-w-lg">
                 <label htmlFor="simple-search" className="sr-only">
@@ -164,13 +167,15 @@ const Profile = () => {
               <input
                 type="date"
                 className="max-w-[7rem] border-gray-300 rounded-lg text-gray-900"
+                placeholder=" "
               />
               <input
                 type="date"
                 className="max-w-[7rem] border-gray-300 rounded-lg text-gray-900"
+                placeholder=" "
               />
             </div>
-          )}
+          )} */}
           {loading ? (
             <div className="flex justify-center items-center w-full h-[50vh] ">
               <Loading />
@@ -182,9 +187,9 @@ const Profile = () => {
                   <ProfileCard
                     key={report._id}
                     id={report._id}
-                    title={report.content_id?.[0]?.title || ''}
+                    title={report.content_id?.[0]?.title || ""}
                     reportTitle={report.title}
-                    body={report.content_id?.[0]?.content || ''}
+                    body={report.content_id?.[0]?.content || ""}
                     date={report.updatedAt}
                   />
                 );

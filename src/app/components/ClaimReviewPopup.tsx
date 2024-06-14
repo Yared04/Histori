@@ -1,5 +1,5 @@
 import React,{useRef, useEffect, MouseEvent, Dispatch, SetStateAction } from 'react'
-import { useRouter } from 'next/router';
+import { useRouter } from "next-nprogress-bar";
 
 type ClaimReviewPopupProps = {
   setConfirm: Dispatch<SetStateAction<boolean>>;
@@ -7,7 +7,7 @@ type ClaimReviewPopupProps = {
 };
 const ClaimReviewPopup: React.FC<ClaimReviewPopupProps> = ({setConfirm, handleClaimReview}) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-//   const router = useRouter()
+  const router = useRouter()
     
 
   useEffect(() => {
@@ -28,6 +28,7 @@ const ClaimReviewPopup: React.FC<ClaimReviewPopupProps> = ({setConfirm, handleCl
   }
   const handleClaim =()=>{
     handleClaimReview()
+    router.push('/reviews')
     setConfirm(false)
   }
     
@@ -37,8 +38,8 @@ const ClaimReviewPopup: React.FC<ClaimReviewPopupProps> = ({setConfirm, handleCl
     <p className='font-bold '>Claim Review</p>
         <p className='text-balck text-sm text-center'>After claiming this review you will have <span className='text-red-700'>5</span> days  to complete the review process. Are you ready to claim this review. Your dedicated time and effort is appritiated</p>
         <div className='flex w-full justify-between'>
-        <button onClick={handleClaim} className=' bg-blue-400 text-white py-2 rounded-md font-medium  w-[40%]'>claim</button>
-        <button onClick={handleDelete} className=' bg-gray-400 text-white py-2 rounded-md font-medium  w-[40%]'>cancel</button>
+        <button onClick={handleClaim} className=' bg-blue-400 text-white py-2 rounded-md font-medium  w-[40%]'>Claim</button>
+        <button onClick={handleDelete} className=' bg-gray-400 text-white py-2 rounded-md font-medium  w-[40%]'>Cancel</button>
         </div>
     </div>
         <div className='w-[100vw] h-full  z-20 fixed left-[18rem] top-[10rem]  backdrop-blur-sm '></div>
