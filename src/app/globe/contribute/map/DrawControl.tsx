@@ -1,5 +1,6 @@
 "use client";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { useEffect } from "react";
 import { useControl } from "react-map-gl";
 
 import type { MapRef, ControlPosition } from "react-map-gl";
@@ -10,10 +11,11 @@ type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
   onCreate?: (evt: { features: object[] }) => void;
   onUpdate?: (evt: { features: object[]; action: string }) => void;
   onDelete?: (evt: { features: object[] }) => void;
+  clear: boolean;
 };
 
 export default function DrawControl(props: DrawControlProps) {
-  useControl<MapboxDraw>(
+  let draw = useControl<MapboxDraw>(
     () => new MapboxDraw(props),
     ({ map }: { map: any }) => {
       map.on("draw.create", props.onCreate);
@@ -29,6 +31,12 @@ export default function DrawControl(props: DrawControlProps) {
       position: props.position,
     }
   );
+
+  useEffect(() => {
+    if (props.clear) {
+      draw.set({ type: "FeatureCollection", features: [] });
+    }
+  }, [props.clear, draw]);
 
   return null;
 }

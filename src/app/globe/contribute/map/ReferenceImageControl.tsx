@@ -31,7 +31,7 @@ const ReferenceImageControl: React.FC<ReferenceImageControlProps> = ({
   console.log(isLocked);
 
   return (
-    <div className="input-fields bg-gray-100 p-4 rounded-md mb-4 absolute top-5 right-5 w-[15%] z-10">
+    <div className="input-fields bg-gray-100 p-4 rounded-md mb-4 absolute top-20 right-5 w-[15%] z-10">
       <div className="grid grid-cols-1 space-y-2">
         <div className="flex w-full justify-end">
           {isLocked ? (
