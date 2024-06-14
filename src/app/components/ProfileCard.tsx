@@ -1,16 +1,48 @@
 "use client";
 import React, { useState } from "react";
-const text =
-  "The time when the ethiopian army defeated the grate Italy with there hands and bones. with the help of the womens we did every thing we can to win the war of the centery. toase to ethiopia The time when the ethiopian army defeated the grate Italy with there hands and bones. with the help of the womens we did every thing we can to win the war of the centery. toase to ethiopia";
-const ProfileCard = () => {
+import ClaimReviewPopup from "./ClaimReviewPopup";
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+
+interface ProfileCardProps {
+  title:string;
+  reportTitle:string;
+  body:string;
+  date:string;
+  id:string;
+}
+const ProfileCard:React.FC<ProfileCardProps> = (props) => {
   const [showMore, setShowMore] = useState(false);
-  const [textToShow, setTextToShow] = useState(text.slice(0, 100));
-  const [textToHide, setTextToHide] = useState(text);
+  const router = useRouter();
+  const [textToShow, setTextToShow] = useState(props.body.slice(0, 100));
+  const [textToHide, setTextToHide] = useState(props.body);
+  const [popDisplay, setPopDisplay] = useState(false);
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const handleClaimReview = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      router.push(`/reviews/${props.id}`)
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div>
-      <div>
+      <div className="cursor-pointer" onClick={()=>setPopDisplay(true)}>
         <div className="flex justify-between">
-          <p className="font-medium">The Battle of Adwa</p>
+          <p className="font-medium">{props.title}</p>
           <button className="flex gap-[.1rem]">
             <div className="w-1 h-1 rounded-full bg-black"></div>
             <div className="w-1 h-1 rounded-full bg-black"></div>
@@ -18,9 +50,9 @@ const ProfileCard = () => {
           </button>
         </div>
         <div className="flex gap-2 items-center">
-          <p>James Milar</p>
+          <p className="capitalize">{props.reportTitle}</p>
           <div className="w-1 h-1 rounded-full bg-black"></div>
-          <p>Mar 14, 2020</p>
+          <p>{formatDate(props.date)}</p>
         </div>
       </div>
       <div className="flex">
@@ -43,6 +75,9 @@ const ProfileCard = () => {
           )}
         </p>
       </div>
+      {
+        popDisplay && <ClaimReviewPopup handleClaimReview={handleClaimReview} setConfirm={setPopDisplay} />
+      }
     </div>
   );
 };
