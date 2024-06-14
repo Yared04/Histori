@@ -21,13 +21,12 @@ const ProfileCard:React.FC<ProfileCardProps> = (props) => {
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjIwZDQ4NmZiMDczMTAzZmM3NWQwMzYiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJEb2UiLCJlbWFpbCI6ImdtYWlsQGdtYWlsLmNvbSIsInJvbGUiOiJjb250cmlidXRvciIsImlhdCI6MTcxODMxMTg0MiwiZXhwIjoxNzI2MDg3ODQyfQ.TNKItursk93jCn84xm3Zeh5vk4JyTJdlm_N7aAjeFdQ';
 
   const handleClaimReview = async () => {
     try {
       const response = await axios.post( `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`, {}, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         }
       });
       router.push(`/articles/${props.id}`)

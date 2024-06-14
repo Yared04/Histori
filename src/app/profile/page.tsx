@@ -12,13 +12,14 @@ const Profile = () => {
   const [reports, setReports] =useState([]);
   const router = useRouter();
   const [search, setSearch] = useState('')
-  const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjIwZDQ4NmZiMDczMTAzZmM3NWQwMzYiLCJmaXJzdE5hbWUiOiJKb2huIiwibGFzdE5hbWUiOiJEb2UiLCJlbWFpbCI6ImdtYWlsQGdtYWlsLmNvbSIsInJvbGUiOiJjb250cmlidXRvciIsImlhdCI6MTcxODMxMTg0MiwiZXhwIjoxNzI2MDg3ODQyfQ.TNKItursk93jCn84xm3Zeh5vk4JyTJdlm_N7aAjeFdQ';
   const hanldeBecomeContributor = async () => {
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/users/contributor`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        }
+        
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        
       });
       console.log(response);
     } catch (error) {
@@ -30,14 +31,14 @@ const Profile = () => {
     const fetchData = async () => {
       const result = await axios.get('https://histori-backend.onrender.com/api/v1/reports?type=History', {
         headers: {
-          Authorization: `Bearer ${token}`,
-        }
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
       setReports(result.data.data.reports);
     };
 
     fetchData();
-  }, [token]);
+  }, []);
   return ( curUser && <ClientComponent>
     <div className=" text-white  min-h-[100vh] relative">
       <div onClick={() => router.push('/article')} title='create an article' className='absolute flex items-center justify-center bottom-10 right-3 cursor-pointer bg-blue-400 w-[3rem] h-[3rem] text-center text-white text-[3rem] rounded-full'>
