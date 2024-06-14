@@ -4,7 +4,7 @@ import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa";
 const Footer = () => {
   return (
     <div>
-      <footer className="h-5 justify-center z-10 text-xs bg-gray-50 flex gap-5 py-0.5 px-8 w-full">
+      <footer className="h-5 justify-center z-10 text-xs bg-gray-50 opacity-90 flex gap-5 py-0.5 px-8 w-full">
         <p>{new Date().getFullYear()} Hisotri All rights reserved &#169;</p>
         <div className="flex space-x-2 social-icons gap- ">
           <a

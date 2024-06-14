@@ -4,7 +4,7 @@ import EventItem from "../articles/ArticleItem";
 import { Event } from "../types/Event";
 import ArticleDetail from "../articles/ArticleDetail";
 import { FaLongArrowAltLeft } from "react-icons/fa";
-
+import Image from "next/image";
 interface SideBarProps {
   events: Event[];
 }
@@ -35,7 +35,7 @@ const SideBar = ({ events }: SideBarProps) => {
 
   return (
     <div className="flex flex-col gap-6 h-full">
-      <div className="sticky top-0 z-10">
+      <div className="sticky top-0 z-10 self-center w-[32rem]">
         {selectedEventIdx === null && (
           <div className="flex items-center max-w-lg pt-8">
             <label htmlFor="simple-search" className="sr-only">
@@ -77,8 +77,21 @@ const SideBar = ({ events }: SideBarProps) => {
       </div>
 
       <div className="flex flex-col gap-3 h-full overflow-auto custom-scrollbar">
-        {selectedEventIdx === null
-          ? filteredEvents.map((event, idx) => (
+        {selectedEventIdx === null ? (
+          filteredEvents.length === 0 ? (
+            <div className="flex flex-col  items-center h-full">
+              <Image
+                src="/urban-line-no-data-found.png"
+                width={400}
+                height={200}
+                alt="No articles found"
+              />
+              <p className="text-sm text-gray-500">
+                No articles found.
+              </p>
+            </div>
+          ) : (
+            filteredEvents.map((event, idx) => (
               <div
                 key={idx}
                 onClick={() => {
@@ -94,24 +107,27 @@ const SideBar = ({ events }: SideBarProps) => {
                 />
               </div>
             ))
-          : events.length > selectedEventIdx && (
-              <div className="relative flex-1 overflow-hidden">
-                <button
-                  onClick={handleBackClick}
-                  className="text-xs hover:text-blue-700 mb-2"
-                >
-                  <span className="flex gap-2">
-                    <FaLongArrowAltLeft className="self-center" />{" "}
-                    <p>Back to articles</p>
-                  </span>
-                </button>
-                <ArticleDetail
-                  event={events[selectedEventIdx]}
-                  startYear={events[selectedEventIdx].start_year}
-                  endYear={events[selectedEventIdx].end_year}
-                />
-              </div>
-            )}
+          )
+        ) : (
+          events.length > selectedEventIdx && (
+            <div className="relative flex-1 overflow-hidden">
+              <button
+                onClick={handleBackClick}
+                className="text-xs hover:text-blue-700 mb-2"
+              >
+                <span className="flex gap-2">
+                  <FaLongArrowAltLeft className="self-center" />{" "}
+                  <p>Back to articles</p>
+                </span>
+              </button>
+              <ArticleDetail
+                event={events[selectedEventIdx]}
+                startYear={events[selectedEventIdx].start_year}
+                endYear={events[selectedEventIdx].end_year}
+              />
+            </div>
+          )
+        )}
       </div>
     </div>
   );

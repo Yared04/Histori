@@ -24,7 +24,7 @@ const Signup = () => {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/users/signup`,
         {
-          profilePic: values.profilePic,
+          // profilePic: values.profilePic,
           fullName: values.fullName,
           username: values.username,
           email: values.email,
@@ -73,11 +73,11 @@ const Signup = () => {
         {({ isSubmitting, errors }) => (
           <Form name="Signup">
             <div className="flex flex-col gap-3.5">
-              <Field
+              {/* <Field
                 name="profilePic"
                 type="file"
                 className="self-center w-64 h-12 rounded-full"
-              />
+              /> */}
               <Field
                 name="fullName"
                 type="text"

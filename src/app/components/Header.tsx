@@ -3,6 +3,7 @@ import { userContext } from "../auth/UserContext";
 import { Dropdown, Avatar } from "flowbite-react";
 import { useRouter } from "next-nprogress-bar";
 import { useContext } from "react";
+import { IoMdLogIn } from "react-icons/io";
 
 const Header = () => {
   const { curUser, setCurUser } = useContext(userContext);
@@ -74,9 +75,12 @@ const Header = () => {
             onClick={() => {
               router.push("/login");
             }}
-            className="text-white font-normal cursor-pointer text-lg"
+            className="font-normal cursor-pointer text-sm"
           >
-            Login
+            <div className="flex gap-0.5">
+              <IoMdLogIn className="self-center" size={20}/>
+              <span>Login</span>
+            </div>
           </button>
         )}
       </div>
