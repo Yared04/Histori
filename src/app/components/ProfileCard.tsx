@@ -24,8 +24,8 @@ const ProfileCard:React.FC<ProfileCardProps> = (props) => {
 
   const handleClaimReview = async () => {
     try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`,
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/report/${props.id}`,{},
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -39,15 +39,15 @@ const ProfileCard:React.FC<ProfileCardProps> = (props) => {
     }
   }
   return (
-    <div>
+    <div className="  border-gray-400 shadow hover:shadow-lg px-3 py-2 mt-3 rounded-md">
       <div className="cursor-pointer" onClick={()=>setPopDisplay(true)}>
         <div className="flex justify-between">
           <p className="font-medium">{props.title}</p>
-          <button className="flex gap-[.1rem]">
+          {/* <button className="flex gap-[.1rem]">
             <div className="w-1 h-1 rounded-full bg-black"></div>
             <div className="w-1 h-1 rounded-full bg-black"></div>
             <div className="w-1 h-1 rounded-full bg-black"></div>
-          </button>
+          </button> */}
         </div>
         <div className="flex gap-2 items-center">
           <p className="capitalize">{props.reportTitle}</p>
