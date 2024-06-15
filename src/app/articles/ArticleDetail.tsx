@@ -16,6 +16,7 @@ interface ArticleDetailProps {
 const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
   const [openModal2, setOpenModal2] = useState(false);
   const [reason, setReason] = useState("");
+  const [title, setTitle] = useState("");
   const toast = useRef<Toast>(null);
 
   const showSuccess = () => {
@@ -44,9 +45,9 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         `${process.env.NEXT_PUBLIC_BASE_URL}/reports`,
         {
           reason: reason,
+          title: title,
           content_id: id,
           type: "History",
-          title: event.title,
         },
         {
           headers: {
@@ -118,7 +119,11 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
           ))}
         </div>
       </div>
-      <div className={`px-2 overflow-y-auto ${event.image ? "max-h-[38vh]": "max-h-[64vh]"}`}>
+      <div
+        className={`px-2 overflow-y-auto ${
+          event.image ? "max-h-[38vh]" : "max-h-[64vh]"
+        }`}
+      >
         <div className="space-y-6">
           <p className="text-sm leading-relaxed ">{event.content}</p>
         </div>
@@ -135,11 +140,18 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
             <h3 className="font-medium mb-4">
               Describe your reason for reporting this article:
             </h3>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title of your report"
+              className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+            />
             <div>
               <textarea
                 rows={7}
                 className="w-full p-3 border border-gray-300 rounded-md"
-                placeholder="Type your reason here"
+                placeholder="Your reason"
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 required
