@@ -48,6 +48,13 @@ const Header = () => {
         >
           Contribute Map
         </button>
+        <button
+          onClick={() => {
+            router.push("/guessFlag");
+          }}
+        >
+          Guess Flag
+        </button>
       </div>
       <div className="basis-1/3 flex justify-end">
         {curUser ? (
