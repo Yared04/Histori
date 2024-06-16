@@ -2,11 +2,14 @@
 import { userContext } from "../auth/UserContext";
 import { Dropdown, Avatar } from "flowbite-react";
 import { useRouter } from "next-nprogress-bar";
-import { useContext } from "react";
+import Image from "next/image";
+import { useContext, useState } from "react";
 import { IoMdLogIn } from "react-icons/io";
-
+import notificationIcon from "../../../public/notification-bell.svg";
+import Notification from "./Notification";
 const Header = () => {
   const { curUser, setCurUser } = useContext(userContext);
+  const [displayNotification, setDisplayNotification] = useState(false);
   const router = useRouter();
 
   const handleLogout = () => {
@@ -56,7 +59,21 @@ const Header = () => {
           Guess Flag
         </button>
       </div>
-      <div className="basis-1/3 flex justify-end">
+      <div className="basis-1/3 flex item-center gap-2 justify-end">
+        {curUser && (
+          <div className="pt-1">
+            <div
+              onClick={() => setDisplayNotification(!displayNotification)}
+              className="w-6 h-6 ml-auto relative"
+            >
+              <Image fill alt="notification list icon" src={notificationIcon} />
+            </div>
+            {displayNotification && (
+              <Notification setConfirm={setDisplayNotification} />
+            )}
+          </div>
+        )}
+
         {curUser ? (
           <div onClick={() => {}} className="cursor-pointer pt-1">
             <Dropdown
@@ -77,7 +94,12 @@ const Header = () => {
                 </span>
               )}
             >
-              <Dropdown.Item className="" onClick={() => {router.push('/profile')}}>
+              <Dropdown.Item
+                className=""
+                onClick={() => {
+                  router.push("/profile");
+                }}
+              >
                 Profile
               </Dropdown.Item>
               <Dropdown.Item className="text-red-600" onClick={handleLogout}>
