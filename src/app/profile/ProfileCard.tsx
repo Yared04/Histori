@@ -22,7 +22,7 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
     toast.current?.show({
       severity: "success",
       summary: "Success",
-      detail: "Report Submitted!",
+      detail: "Report Claimed!",
       life: 2000,
     });
   };
