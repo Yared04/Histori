@@ -166,7 +166,7 @@ const MatchingGame: React.FC = () => {
               </div>
             ))}
           </div>
-          <button
+          {/* <button
             onClick={
               answerResult[Object.keys(answerResult)[0]] === false
                 ? retry
@@ -180,7 +180,7 @@ const MatchingGame: React.FC = () => {
             {answerResult[Object.keys(answerResult)[0]] === false
               ? "Retry"
               : "Next"}
-          </button>
+          </button> */}
         </>
       )}
     </div>
