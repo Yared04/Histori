@@ -1,6 +1,12 @@
 "use client";
 import { Button, TextInput } from "flowbite-react";
-import React, { ChangeEvent, useContext, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import { ArticleContext } from "../../articles/ArticleContext";
@@ -10,6 +16,8 @@ import axios from "axios";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Starfield from "react-starfield";
+import { Toast } from "primereact/toast";
+import { useRouter } from "next-nprogress-bar";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -20,9 +28,37 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
   if (!articleContext) {
     throw new Error("ArticleContext must be used within an ArticleProvider");
   }
+  const router = useRouter();
   const { state, dispatch } = articleContext;
   const [review, setReview] = useState<any>(null);
   const [report, setReport] = useState<any>(null);
+  const toast = useRef<Toast>(null);
+
+  const showSuccess1 = () => {
+    toast.current?.show({
+      severity: "success",
+      summary: "Success",
+      detail: "Progress saved!",
+      life: 2000,
+    });
+  };
+
+  const showSuccess2 = () => {
+    toast.current?.show({
+      severity: "success",
+      summary: "Success",
+      detail: "Review submitted!",
+      life: 2000,
+    });
+  };
+  const showError = (detail: string) => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Error",
+      detail: detail,
+      life: 2000,
+    });
+  };
 
   const fetchReport = async (reportId: string) => {
     try {
@@ -209,8 +245,11 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           },
         }
       );
-    } catch (error) {
+      showSuccess2();
+      router.push("/profile");
+    } catch (error: any) {
       console.error("Error in handleSubmit:", error);
+      showError(error.response.data.message);
     }
   };
 
@@ -233,9 +272,9 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           },
         }
       );
-
-      console.log(response2.data);
-    } catch (error) {
+      showSuccess1();      
+    } catch (error: any) {
+      showError(error.response.data.message);
       console.error("Error in handleSave:", error);
     }
   };
@@ -245,9 +284,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
       <Header />
       <div className="lg:px-56 min-h-[91.5vh]">
         <div className="flex flex-col gap-5 pt-10 pb-3">
-          <h1 className="text-white text-3xl text-center font-bold">
-            Edit Reported Article
-          </h1>
+          <h1 className="text-white text-3xl text-center font-bold">Review</h1>
           {report !== null && (
             <ReportItem
               title={report?.title}
@@ -404,6 +441,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
         speedFactor={0.05}
         backgroundColor="black"
       />
+      <Toast ref={toast} position="top-center" />
     </>
   );
 };
