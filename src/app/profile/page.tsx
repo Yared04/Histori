@@ -8,6 +8,7 @@ import { userContext } from "../auth/UserContext";
 import { useRouter } from "next-nprogress-bar";
 import { Avatar, Tabs, TabsRef } from "flowbite-react";
 import ReviewCard from "./ReviewCard";
+import { TbSwitchHorizontal } from "react-icons/tb";
 
 const Profile = () => {
   const { curUser, setCurUser } = useContext(userContext);
@@ -17,6 +18,9 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [myDraft, setMyDraft] = useState(false);
   const tabsRef = useRef<TabsRef>(null);
+  const [history, setHistory] = useState(true);
+  const type = history ? "History" : "Map";
+
 
   const hanldeBecomeContributor = async () => {
     try {
@@ -30,7 +34,6 @@ const Profile = () => {
           },
         }
       );
-      console.log(response);
       if (response?.data.data.user) {
         setCurUser!!(response.data.data.user);
       }
@@ -43,7 +46,7 @@ const Profile = () => {
   const fetchReviews = async () => {
     setLoading(true);
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/type/History`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/type/${type}`,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -59,8 +62,8 @@ const Profile = () => {
       setLoading(true);
       const reportEndpoint =
         curUser?.role === "contributor" && !myDraft
-          ? "/reports/all/?type=History"
-          : "/reports?type=History";
+          ? `/reports/all/?type=${type}`
+          : `/reports?type=${type}`;
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}${reportEndpoint}`,
@@ -75,10 +78,10 @@ const Profile = () => {
     };
 
     fetchData();
-    if(curUser?.role === "contributor"){
+    if (curUser?.role === "contributor") {
       fetchReviews();
     }
-  }, [curUser, myDraft]);
+  }, [curUser, myDraft, history]);
   return (
     curUser && (
       <ClientComponent>
@@ -173,15 +176,26 @@ const Profile = () => {
               />
             </div>
              )} */}
+            {/* Toggle button between histroy and article */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setHistory(!history)}
+                className={`${
+                  history ? "bg-blue-500 text-white" : "bg-gray-300"
+                } px-2 py-1 rounded-md`}
+              >
+                <span className="flex gap-1">
+                {history ? "Article" : "Map"}
+                <TbSwitchHorizontal className="self-center mt-0.5" /></span>
+              </button>
+            </div>
           </div>
-          <div  className="overflow-y-auto" >
+          <div className="overflow-y-auto">
             <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
               <Tabs.Item
                 active
                 title={
-                  curUser.role === "contributor"
-                    ? "Reported Articles"
-                    : "My Reports"
+                  curUser.role === "contributor" ? "Reports" : "My Reports"
                 }
               >
                 <div className="">
@@ -200,22 +214,23 @@ const Profile = () => {
                 </div>
               </Tabs.Item>
               {curUser.role === "contributor" && (
-              <Tabs.Item title="My Reviews">
-                <div className="">
-                  {reviews?.map((review: any) => {
-                    return (
-                      <ReviewCard
-                        key={review._id}
-                        id={review._id}
-                        title={review.content_id?.title}
-                        status={review.status}
-                        type={review.type}
-                        dueDate={review.due_date}
-                      />
-                    );
-                  })}
-                </div>
-              </Tabs.Item>)}
+                <Tabs.Item title="My Reviews">
+                  <div className="">
+                    {reviews?.map((review: any) => {
+                      return (
+                        <ReviewCard
+                          key={review._id}
+                          id={review._id}
+                          title={review.content_id?.title}
+                          status={review.status}
+                          type={review.type}
+                          dueDate={review.due_date}
+                        />
+                      );
+                    })}
+                  </div>
+                </Tabs.Item>
+              )}
             </Tabs>
           </div>
         </div>
