@@ -5,7 +5,6 @@ import TimeControl from "../globe/timeline/TimeControl";
 import TimeSlider from "../globe/timeline/TimeSlider";
 import Header from "./Header";
 import Footer from "./Footer";
-import { useRouter } from "next-nprogress-bar";
 
 const Earth = dynamic(() => import("../globe/Earth"), { ssr: false });
 
@@ -14,7 +13,6 @@ interface ClientComponentProps {
 }
 
 const ClientComponent: React.FC<ClientComponentProps> = ({ children }) => {
-  const router = useRouter();
 
   return (
     <div className="flex flex-col bg-[url('/stars.png')]">
