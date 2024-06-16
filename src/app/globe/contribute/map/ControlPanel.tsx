@@ -7,7 +7,6 @@ import React, {
   useTransition,
   startTransition,
 } from "react";
-import { FiLock, FiUnlock } from "react-icons/fi";
 
 function ControlPanel(props: any) {
   const [isVisible, setIsVisible] = useState(true);
@@ -88,7 +87,7 @@ function ControlPanel(props: any) {
 
   return (
     <div
-      className={`control-panel absolute top-20 left-5 max-h-[90%] overflow-y-scroll z-10 bg-white w-[25%] shadow-lg px-8 py-6 pointer-events-auto rounded-lg border-2 border-gray-200 transition-transform ${
+      className={`control-panel absolute top-20 left-5 max-h-[85%] overflow-y-scroll z-10 bg-white w-[25%] shadow-lg px-8 py-6 pointer-events-auto rounded-lg border-2 border-gray-200 transition-transform ${
         isVisible ? "transform scale-100" : "transform scale-0"
       }`}
     >

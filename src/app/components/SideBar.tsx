@@ -76,7 +76,7 @@ const SideBar = ({ events }: SideBarProps) => {
         )}
       </div>
 
-      <div className="flex flex-col gap-3 h-full overflow-auto custom-scrollbar">
+      <div className="flex flex-col gap-3 mb-4 h-full overflow-auto">
         {selectedEventIdx === null ? (
           filteredEvents.length === 0 ? (
             <div className="flex flex-col  items-center h-full">

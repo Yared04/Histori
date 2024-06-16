@@ -38,7 +38,7 @@ const Header = () => {
             router.push("/articles");
           }}
         >
-          Create Article
+          Contribute Article
         </button>
 
         <button
@@ -46,7 +46,14 @@ const Header = () => {
             router.push("/globe/contribute/map");
           }}
         >
-          Add Map
+          Contribute Map
+        </button>
+        <button
+          onClick={() => {
+            router.push("/guessFlag");
+          }}
+        >
+          Guess Flag
         </button>
       </div>
       <div className="basis-1/3 flex justify-end">
@@ -70,7 +77,7 @@ const Header = () => {
                 </span>
               )}
             >
-              <Dropdown.Item className="" onClick={() => {}}>
+              <Dropdown.Item className="" onClick={() => {router.push('/profile')}}>
                 Profile
               </Dropdown.Item>
               <Dropdown.Item className="text-red-600" onClick={handleLogout}>

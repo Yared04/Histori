@@ -16,6 +16,7 @@ interface ArticleDetailProps {
 const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
   const [openModal2, setOpenModal2] = useState(false);
   const [reason, setReason] = useState("");
+  const [title, setTitle] = useState("");
   const toast = useRef<Toast>(null);
 
   const showSuccess = () => {
@@ -44,9 +45,9 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         `${process.env.NEXT_PUBLIC_BASE_URL}/reports`,
         {
           reason: reason,
+          title: title,
           content_id: id,
           type: "History",
-          title: event.title,
         },
         {
           headers: {
@@ -73,12 +74,12 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
           alt="Picture of the article"
           width={100}
           height={100}
-          className="w-full h-56 object-fill rounded-lg"
+          className="w-[100%] lg:h-48 md:h-36 h-20 mx-auto object-cover rounded-md mb-1"
         />
       )}
       <div className="sticky top-0 z-10">
         <div className="flex justify-between">
-          <h1 className="p-2 text-xl font-bold ">{event.title}</h1>
+          <h1 className="px-2 pt-2 text-xl font-bold ">{event.title}</h1>
           <div className="self-center">
             <Dropdown
               label=""
@@ -109,16 +110,20 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
             </Dropdown>
           </div>
         </div>
-        <p className="text-xs pl-2">
+        <p className="text-xs pl-2 font-light">
           From {startYear} to {endYear}
         </p>
-        <div className="flex gap-2 pl-2 py-4 flex-wrap">
+        <div className="flex gap-2 pl-2 py-1.5 flex-wrap">
           {event.categories.map((tag, idx) => (
             <Tag name={tag} key={idx} />
           ))}
         </div>
       </div>
-      <div className="p-2 overflow-y-auto max-h-[60vh]">
+      <div
+        className={`px-2 overflow-y-auto ${
+          event.image ? "max-h-[38vh]" : "max-h-[64vh]"
+        }`}
+      >
         <div className="space-y-6">
           <p className="text-sm leading-relaxed ">{event.content}</p>
         </div>
@@ -135,11 +140,18 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
             <h3 className="font-medium mb-4">
               Describe your reason for reporting this article:
             </h3>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title of your report"
+              className="w-full p-3 mb-3 border border-gray-300 rounded-md"
+            />
             <div>
               <textarea
                 rows={7}
                 className="w-full p-3 border border-gray-300 rounded-md"
-                placeholder="Type your reason here"
+                placeholder="Your reason"
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 required
