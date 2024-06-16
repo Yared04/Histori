@@ -25,6 +25,7 @@ const MatchingGame: React.FC = () => {
   const [answerResult, setAnswerResult] = useState<{
     [key: string]: boolean | null;
   }>({});
+  const [isOptionSelected, setIsOptionSelected] = useState<boolean>(false);
   const [score, setScore] = useState<number>(0);
   const [round, setRound] = useState<number>(1);
   const [gameOver, setGameOver] = useState<boolean>(false);
@@ -52,8 +53,6 @@ const MatchingGame: React.FC = () => {
     );
     const data = response.data.data;
     setFlags(data.flags);
-    setCurrentFlagIndex(0);
-    setRound(1);
     setScore(0);
     setGameOver(false);
   };
@@ -64,23 +63,23 @@ const MatchingGame: React.FC = () => {
     generateOptions(correctFlag);
   };
 
+  const shuffleArray = (array: any[]) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+
   const generateOptions = (correctFlag: Flag) => {
     let options = [correctFlag];
-    const incorrectFlags = flags.filter(flag => flag._id !== correctFlag._id);
+    const incorrectFlags = flags.filter((flag) => flag._id !== correctFlag._id);
     while (options.length < 4) {
       const randomIndex = Math.floor(Math.random() * incorrectFlags.length);
       const randomFlag = incorrectFlags.splice(randomIndex, 1)[0];
       options.push(randomFlag);
     }
-    const optionItems = options.map(flag => ({
+    const optionItems = options.map((flag) => ({
       id: flag._id,
-      name: `${flag.country} (${flag.start_year} - ${flag.end_year})`
+      name: `${flag.country} (${flag.start_year} - ${flag.end_year})`,
     }));
     setCurrentOptions(shuffleArray(optionItems));
-  };
-
-  const shuffleArray = (array: any[]) => {
-    return array.sort(() => Math.random() - 0.5);
   };
 
   const handleOptionClick = (option: Option) => {
@@ -90,20 +89,21 @@ const MatchingGame: React.FC = () => {
       if (isCorrect) {
         setScore((prevScore) => prevScore + 1);
       }
-      setTimeout(() => {
-        if (round < 5) {
-          setCurrentFlagIndex((prevIndex) => prevIndex + 1);
-          setRound((prevRound) => prevRound + 1);
-          setAnswerResult({});
-        } else {
-          setGameOver(true);
-        }
-      }, 1500); // Add a delay before showing the next flag and options
+      setIsOptionSelected(true); // Update state to indicate an option has been selected
     }
   };
 
-  const retry = () => {
-    setAnswerResult({});
+  const handleNextClick = () => {
+    if (round < 5) {
+      setCurrentFlagIndex((prevIndex) => prevIndex + 1);
+      setRound((prevRound) => prevRound + 1);
+      setAnswerResult({});
+      setIsOptionSelected(false); // Reset state for the next question
+    } else {
+      setGameOver(true);
+      setRound(1);
+      setCurrentFlagIndex(0);
+    }
   };
 
   const restartGame = () => {
@@ -143,44 +143,40 @@ const MatchingGame: React.FC = () => {
             </p>
           </div>
           {selectedFlag && (
-            <div className="mb-16 text-center mx-auto">
-              <FlagItem imageUrl={selectedFlag.url} />
-            </div>
-          )}
-          <div className="grid grid-cols-2 gap-8 mb-5">
-            {currentOptions.map((option) => (
-              <div
-                key={option.id}
-                className={`p-3 border rounded cursor-pointer transition-colors flex items-center justify-between ${
-                  answerResult[option.id] === true
-                    ? "bg-green-200 ring-1 ring-green-500"
-                    : answerResult[option.id] === false
-                    ? "bg-red-200 ring-1 ring-red-500"
-                    : "bg-transparent text-white hover:-translate-y-1 hover:ring-1 hover:ring-gray-500"
-                }`}
-                onClick={() => handleOptionClick(option)}
-              >
-                {option.name}
-                {answerResult[option.id] !== undefined &&
-                  renderIcon(answerResult[option.id] as boolean)}
+            <>
+              <div className="mb-16 text-center mx-auto">
+                <FlagItem imageUrl={selectedFlag.url} />
               </div>
-            ))}
-          </div>
-          {/* <button
-            onClick={
-              answerResult[Object.keys(answerResult)[0]] === false
-                ? retry
-                : () => {
-                    setCurrentFlagIndex((prevIndex) => prevIndex + 1);
-                    setRound((prevRound) => prevRound + 1);
-                  }
-            }
-            className="px-4 py-2 w-36 self-end bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-          >
-            {answerResult[Object.keys(answerResult)[0]] === false
-              ? "Retry"
-              : "Next"}
-          </button> */}
+              <div className="grid grid-cols-2 gap-8 mb-5">
+                {currentOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    className={`p-3 border rounded cursor-pointer transition-colors flex items-center justify-between ${
+                      answerResult[option.id] === true
+                        ? "bg-green-200 ring-1 ring-green-500"
+                        : answerResult[option.id] === false
+                        ? "bg-red-200 ring-1 ring-red-500"
+                        : "bg-transparent text-white hover:-translate-y-1 hover:ring-1 hover:ring-gray-500"
+                    }`}
+                    onClick={() => handleOptionClick(option)}
+                    disabled={isOptionSelected}
+                  >
+                    {option.name}
+                    {answerResult[option.id] !== undefined &&
+                      renderIcon(answerResult[option.id] as boolean)}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+          {isOptionSelected && (
+            <button
+              onClick={handleNextClick}
+              className="px-4 py-2 w-36 self-end bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Next
+            </button>
+          )}
         </>
       )}
     </div>

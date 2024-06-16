@@ -1,5 +1,6 @@
 import { createContext, SetStateAction, useEffect, useState } from "react";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 interface UserContextType {
   curUser: any;
@@ -18,35 +19,42 @@ interface UserContextProviderProps {
 
 interface MyJwtPayload {
   _id: string;
-  email: string; 
+  email: string;
   iat: number;
   exp: number;
   role: string;
+  points: number;
 }
-
 
 export const UserContextProvider = ({ children }: UserContextProviderProps) => {
   const [curUser, setCurUser] = useState(null);
   const [showLogin, setShowLogin] = useState(false);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode<MyJwtPayload>(token);
-      // Check if token is expired
-      const isExpired = (decoded.exp as number) * 1000 < Date.now();
-      if (!isExpired) {
-        setCurUser({email: decoded.email, role: decoded.role} as any); // Add 'as any' to bypass type checking
-      } else {
-        localStorage.removeItem("token");
-      }
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/users/user`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setCurUser(response.data);
+    } catch (error) {
+      console.error(error);
     }
+  };
+
+  useEffect(() => {
+    fetchUser();
   }, []);
 
   return (
-    <userContext.Provider value={{ curUser, setCurUser, showLogin, setShowLogin}}>
+    <userContext.Provider
+      value={{ curUser, setCurUser, showLogin, setShowLogin }}
+    >
       {children}
     </userContext.Provider>
   );
 };
-

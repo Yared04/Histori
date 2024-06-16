@@ -47,7 +47,8 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
           },
         }
       );
-      router.push(`/reviews/${props.id}`);
+      const reviewId = response.data.data._id
+      router.push(`/reviews/${reviewId}`);
       showSuccess();
     } catch (error: any) {
       console.log(error);

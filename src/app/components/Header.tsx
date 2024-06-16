@@ -17,7 +17,7 @@ const Header = () => {
     setCurUser!(null);
   };
   return (
-    <div className="font-normal text-sm cursor-pointer h-10 z-10 bg-gray-50 opacity-65 hover:opacity-95 flex py-1 px-8">
+    <div className="font-normal sticky top-0 text-sm cursor-pointer h-10 z-10 bg-gray-50 opacity-65 hover:opacity-95 flex py-1 px-8">
       <div className="basis-1/3">
         <h1
           onClick={() => {
@@ -36,21 +36,24 @@ const Header = () => {
         >
           Globe
         </button>
-        <button
-          onClick={() => {
-            router.push("/articles");
-          }}
-        >
-          Contribute Article
-        </button>
-
-        <button
-          onClick={() => {
-            router.push("/globe/contribute/map");
-          }}
-        >
-          Contribute Map
-        </button>
+        {curUser && curUser.role === "contributor" && (
+          <button
+            onClick={() => {
+              router.push("/articles");
+            }}
+          >
+            Contribute Article
+          </button>
+        )}
+        {curUser && curUser.role === "contributor" && (
+          <button
+            onClick={() => {
+              router.push("/globe/contribute/map");
+            }}
+          >
+            Contribute Map
+          </button>
+        )}
         <button
           onClick={() => {
             router.push("/guessFlag");

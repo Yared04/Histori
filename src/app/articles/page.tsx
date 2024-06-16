@@ -15,7 +15,10 @@ const Articles = () => {
         backgroundColor="black"
       />
       <Header />
-      <AddArticle />
+      <div className="overflow-y-auto">
+        <AddArticle />
+      </div>
+      
       <Footer />
     </>
   );

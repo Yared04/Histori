@@ -1,12 +1,19 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Image from "next/image";
 import { Modal, Dropdown } from "flowbite-react";
 import Tag from "../components/Tag";
 import { Event } from "@/app/types/Event";
 import axios from "axios";
 import { Toast } from "primereact/toast";
-import ReactQuill from "react-quill";
+import "react-quill/dist/quill.bubble.css";
+import dynamic from "next/dynamic";
+import { userContext } from "../auth/UserContext";
+import { useRouter } from "next-nprogress-bar";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
 
 interface ArticleDetailProps {
   event: Event;
@@ -18,6 +25,8 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
   const [openModal2, setOpenModal2] = useState(false);
   const [reason, setReason] = useState("");
   const [title, setTitle] = useState("");
+  const { curUser } = useContext(userContext);
+  const router = useRouter();
   const toast = useRef<Toast>(null);
 
   const showSuccess = () => {
@@ -38,8 +47,16 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
     });
   };
 
+  const showError2 = () => {
+    toast.current?.show({
+      severity: "error",
+      summary: "Error",
+      detail: "You need to login to report an article",
+      life: 2000,
+    });
+  };
+
   const handleReportSubmit = async (id: string) => {
-    console.log(reason);
     //send request to the backend
     try {
       const response = await axios.post(
@@ -57,7 +74,6 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         }
       );
 
-      console.log(response);
       showSuccess();
     } catch (error: any) {
       console.error(error);
@@ -65,6 +81,15 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
     }
     setReason("");
     setOpenModal2(false);
+  };
+
+  const handleReportClick = () => {
+    if (curUser === null) {
+      showError2();
+      router.push("/login");
+    } else {
+      setOpenModal2(true);
+    }
   };
 
   return (
@@ -102,9 +127,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
             >
               <Dropdown.Item
                 className="text-red-600"
-                onClick={() => {
-                  setOpenModal2(true);
-                }}
+                onClick={handleReportClick}
               >
                 Report Article
               </Dropdown.Item>
@@ -126,13 +149,21 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         }`}
       >
         <div className="space-y-6">
-          {/* <ReactQuill
+          <ReactQuill
             value={event.content}
             readOnly={true}
             theme={"bubble"}
-            className=""
-          /> */}
-          <p className="text-sm leading-relaxed ">{event.content}</p>
+            className="custom-quill1 my-1"
+          />
+        </div>
+        <div>
+          <hr className="my-1.5" />
+          <p className="">Sources</p>
+          <ul className="list-disc list-inside">
+            {event.sources.map((source: string, idx: number) => (
+              <li key={idx}>{source}</li>
+            ))}
+          </ul>
         </div>
       </div>
       <div className="mx-5 flex gap-9 justify-end">
