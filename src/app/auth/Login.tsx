@@ -15,6 +15,7 @@ const Login = () => {
     values: { email: any; password: any },
     { setSubmitting, setFieldError }: any
   ) => {
+    console.log("here");
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/users/login`,
@@ -93,7 +94,12 @@ const Login = () => {
       </Formik>
       <p className="text-sm text-center">
         Don&apos;t have an account?{" "}
-        <button className="text-blue-600" onClick={() => {router.push("/signup")}}>
+        <button
+          className="text-blue-600"
+          onClick={() => {
+            router.push("/signup");
+          }}
+        >
           Register
         </button>
       </p>
@@ -116,7 +122,11 @@ const PasswordInput = () => {
         onClick={() => setShowPassword(!showPassword)}
         className="absolute top-1/2 right-2 transform -translate-y-1/2"
       >
-        {showPassword ? <BiSolidHide color="black" /> : <BiSolidShow color="black" />}
+        {showPassword ? (
+          <BiSolidHide color="black" />
+        ) : (
+          <BiSolidShow color="black" />
+        )}
       </button>
     </div>
   );

@@ -43,7 +43,6 @@ const Signup = () => {
 
   const validationSchema = Yup.object().shape({
     fullName: Yup.string().required("Full Name is required"),
-    username: Yup.string().required("Username is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
     password: Yup.string().required("Password is required"),
     confirmPassword: Yup.string()

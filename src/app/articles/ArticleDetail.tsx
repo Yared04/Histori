@@ -6,6 +6,7 @@ import Tag from "../components/Tag";
 import { Event } from "@/app/types/Event";
 import axios from "axios";
 import { Toast } from "primereact/toast";
+import ReactQuill from "react-quill";
 
 interface ArticleDetailProps {
   event: Event;
@@ -125,6 +126,12 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
         }`}
       >
         <div className="space-y-6">
+          {/* <ReactQuill
+            value={event.content}
+            readOnly={true}
+            theme={"bubble"}
+            className=""
+          /> */}
           <p className="text-sm leading-relaxed ">{event.content}</p>
         </div>
       </div>
