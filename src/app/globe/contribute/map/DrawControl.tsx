@@ -32,12 +32,6 @@ export default function DrawControl(props: DrawControlProps) {
     }
   );
 
-  useEffect(() => {
-    if (props.clear) {
-      draw.set({ type: "FeatureCollection", features: [] });
-    }
-  }, [props.clear, draw]);
-
   return null;
 }
 
