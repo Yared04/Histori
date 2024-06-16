@@ -7,6 +7,7 @@ import { ArticleContext } from "./ArticleContext";
 import { Toast } from "primereact/toast";
 import Image from "next/image";
 import axios from "axios";
+import { useRouter } from "next-nprogress-bar";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -14,6 +15,7 @@ const ReactQuill = dynamic(() => import("react-quill"), {
 
 const CreateArticle = () => {
   const articleContext = useContext(ArticleContext);
+  const router = useRouter();
   if (!articleContext) {
     throw new Error("ArticleContext must be used within an ArticleProvider");
   }
@@ -24,7 +26,7 @@ const CreateArticle = () => {
     toast.current?.show({
       severity: "success",
       summary: "Success",
-      detail: "Report Submitted!",
+      detail: "Article created Succefully!",
       life: 2000,
     });
   };
@@ -143,8 +145,8 @@ const CreateArticle = () => {
           },
         }
       );
-      console.log(response);
       showSuccess();   
+      router.push("/profile");
       dispatch({ type: "RESET" });   
     } catch (error: any) {
       console.error(error);
@@ -156,7 +158,7 @@ const CreateArticle = () => {
     <div className="lg:px-56 min-h-[91.5vh]">
       <div className="flex flex-col gap-5 pt-10 pb-3">
         <h1 className="text-white text-3xl text-center font-bold">
-          Create Article
+          Contribute an Article
         </h1>
 
         <div className="flex w-full items-center justify-center">
