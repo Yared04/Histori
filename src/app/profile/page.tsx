@@ -6,9 +6,7 @@ import ProfileImageInput from "./ProfileImageInput";
 import ClientComponent from "../components/ClientComponent";
 import { userContext } from "../auth/UserContext";
 import { useRouter } from "next-nprogress-bar";
-import Loading from "../components/Loading";
 import { Avatar, Tabs, TabsRef } from "flowbite-react";
-import { HiUserCircle } from "react-icons/hi";
 import ReviewCard from "./ReviewCard";
 
 const Profile = () => {
@@ -18,7 +16,6 @@ const Profile = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [myDraft, setMyDraft] = useState(false);
-  const [search, setSearch] = useState("");
   const tabsRef = useRef<TabsRef>(null);
 
   const hanldeBecomeContributor = async () => {
@@ -38,7 +35,7 @@ const Profile = () => {
         setCurUser!!(response.data.data.user);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setLoading(false);
   };
@@ -78,7 +75,9 @@ const Profile = () => {
     };
 
     fetchData();
-    fetchReviews();
+    if(curUser?.role === "contributor"){
+      fetchReviews();
+    }
   }, [curUser, myDraft]);
   return (
     curUser && (
@@ -103,74 +102,26 @@ const Profile = () => {
                   color="purple"
                 />
               </span>
-              <p className=" text-2xl font-bold">{curUser.email}</p>
+              <p className=" text-xl font-bold">{curUser.email}</p>
               <p>{curUser.role}</p>
+              <div>{curUser.points} Pts</div>
             </div>
             {curUser.role === "contributor" ? (
               <div className="cursor-pointer flex items-center justify-end gap-1">
-                <input
-                  onChange={(e) => setMyDraft(!myDraft)}
-                  type="checkbox"
-                />
+                <input onChange={(e) => setMyDraft(!myDraft)} type="checkbox" />
                 <p className="text-right text-sm">My reports only</p>
               </div>
             ) : (
-              <div className="cursor-pointer ml-auto border rounded-md w-fit px-2 py-2 border-gray-400 hover:bg-blue-500 hover:text-white">
+              <div className="cursor-pointer text-sm ml-auto border rounded-md w-fit px-2 py-2 border-gray-400 hover:bg-blue-500 hover:text-white">
                 <p
-                  title="After becoming a contributor you will be able to suggest edit to articles"
-                  className="text-right"
+                  title="After becoming a contributor you will be able to contribute articles and maps."
+                  className="text-righ"
                   onClick={hanldeBecomeContributor}
                 >
                   Become a Contributor
                 </p>
               </div>
             )}
-
-            <Tabs
-              aria-label="Default tabs"
-              style="default"
-              ref={tabsRef}
-            >
-              <Tabs.Item
-                active
-                title={
-                  curUser.role === "contributor"
-                    ? "Reported Articles"
-                    : "My Reports"
-                }
-              >
-                <div className="overflow-auto h-full">
-                  {reports?.map((report: any) => {
-                    return (
-                      <ProfileCard
-                        key={report._id}
-                        id={report._id}
-                        title={report.content_id?.[0]?.title || ""}
-                        body={report.content_id?.[0]?.content || ""}
-                        date={report.updatedAt}
-                        status={report.status}
-                      />
-                    );
-                  })}
-                </div>
-              </Tabs.Item>
-              <Tabs.Item title="My Reviews">
-                <div className="overflow-auto h-full">
-                  {reviews?.map((review: any) => {
-                    return (
-                      <ReviewCard
-                        key={review._id}
-                        id={review._id}
-                        title={review.content_id.title}
-                        status={review.status}
-                        type={review.type}
-                        dueDate={review.due_date}
-                      />
-                    );
-                  })}
-                </div>
-              </Tabs.Item>
-            </Tabs>
 
             {/* {curUser.role === "contributor" && (
             <div className="flex gap-2">
@@ -223,7 +174,50 @@ const Profile = () => {
             </div>
              )} */}
           </div>
-          
+          <div  className="overflow-y-auto" >
+            <Tabs aria-label="Default tabs" style="default" ref={tabsRef}>
+              <Tabs.Item
+                active
+                title={
+                  curUser.role === "contributor"
+                    ? "Reported Articles"
+                    : "My Reports"
+                }
+              >
+                <div className="">
+                  {reports?.map((report: any) => {
+                    return (
+                      <ProfileCard
+                        key={report._id}
+                        id={report._id}
+                        title={report.title || ""}
+                        body={report.reason || ""}
+                        date={report.updatedAt}
+                        status={report.status}
+                      />
+                    );
+                  })}
+                </div>
+              </Tabs.Item>
+              {curUser.role === "contributor" && (
+              <Tabs.Item title="My Reviews">
+                <div className="">
+                  {reviews?.map((review: any) => {
+                    return (
+                      <ReviewCard
+                        key={review._id}
+                        id={review._id}
+                        title={review.content_id?.title}
+                        status={review.status}
+                        type={review.type}
+                        dueDate={review.due_date}
+                      />
+                    );
+                  })}
+                </div>
+              </Tabs.Item>)}
+            </Tabs>
+          </div>
         </div>
       </ClientComponent>
     )

@@ -128,3 +128,22 @@
 .control-panel::-webkit-scrollbar-thumb:hover {
   background-color: #a0aec0; /* Gray-500 */
 }
+
+.custom-quill1 .ql-editor {
+  margin: 0 !important;
+  padding: 0 !important; /* Adjust padding if necessary */
+}
+
+.custom-quill .ql-container {
+  margin: 0 !important;
+}
+
+.custom-quill .ql-editor {
+  margin: 0 !important;
+  padding: 0 !important; /* Adjust padding if necessary */
+  display: -webkit-box; /* Required for line clamping */
+  -webkit-box-orient: vertical; /* Required for line clamping */
+  overflow: hidden; /* Hide overflowing text */
+  -webkit-line-clamp: 3; /* Limit text to 3 lines */
+}
+

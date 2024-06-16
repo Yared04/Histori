@@ -1,6 +1,12 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import "react-quill/dist/quill.bubble.css";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
+});
 
 interface EventItemProps {
   title: string;
@@ -36,7 +42,12 @@ const EventItem = ({
         <p className="text-xs mb-3">
           From {startYear} to {endYear}
         </p>
-        <p className="my-1 text-sm line-clamp-3">{description}</p>
+          <ReactQuill
+            value={description}
+            readOnly={true}
+            theme={"bubble"}
+            className="text-sm custom-quill cursor-pointer"
+          />
       </div>
     </div>
   );

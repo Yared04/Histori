@@ -62,7 +62,6 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
 
   const fetchReport = async (reportId: string) => {
     try {
-      console.log("here", reportId);
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/reports/${reportId}`,
         {
@@ -104,37 +103,37 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
     if (review) {
       dispatch({
         type: "SET_TITLE",
-        payload: review.temp_history_id?.title ?? review.content_id.title,
+        payload: review.temp_history_id?.title ?? review.content_id?.title,
       });
       dispatch({
         type: "SET_COUNTRY",
-        payload: review.temp_history_id?.country ?? review.content_id.country,
+        payload: review.temp_history_id?.country ?? review.content_id?.country,
       });
       dispatch({
         type: "SET_CONTENT",
-        payload: review.temp_history_id?.content ?? review.content_id.content,
+        payload: review.temp_history_id?.content ?? review.content_id?.content,
       });
       dispatch({
         type: "SET_CATEGORIES",
         payload:
           review.temp_history_id?.categories.join(", ") ??
-          review.content_id.categories.join(", "),
+          review.content_id?.categories.join(", "),
       });
       dispatch({
         type: "SET_SOURCES",
         payload:
           review.temp_history_id?.sources.join(", ") ??
-          review.content_id.sources.join(", "),
+          review.content_id?.sources.join(", "),
       });
       // dispatch({ type: "SET_IMAGE_URL", payload: review.content_id.imageUrl });
       dispatch({
         type: "SET_START_YEAR",
         payload:
-          review.temp_history_id?.start_year ?? review.content_id.start_year,
+          review.temp_history_id?.start_year ?? review.content_id?.start_year,
       });
       dispatch({
         type: "SET_END_YEAR",
-        payload: review.temp_history_id?.end_year ?? review.content_id.end_year,
+        payload: review.temp_history_id?.end_year ?? review.content_id?.end_year,
       });
     }
   }, [review, dispatch]);

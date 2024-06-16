@@ -9,7 +9,7 @@ const FlagItem = ({imageUrl}: FlagItemProps) => {
   return (
     <div >
       <Image
-       className="shadow-lg rounded-lg object-cover"
+       className="shadow-lg rounded-lg object-cover max-h-[20rem]"
         src={imageUrl}
         alt="flag"
         width={450}

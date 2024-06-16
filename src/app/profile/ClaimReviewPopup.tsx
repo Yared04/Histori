@@ -34,7 +34,6 @@ const ClaimReviewPopup: React.FC<ClaimReviewPopupProps> = ({
   }, [setConfirm]);
   const handleDelete = () => {
     setConfirm(false);
-    // router.back()
   };
   const handleClaim = () => {
     handleClaimReview();
@@ -50,7 +49,7 @@ const ClaimReviewPopup: React.FC<ClaimReviewPopupProps> = ({
         <p className="font-bold ">Claim Review</p>
         <p className="text-balck text-sm text-center">
           After claiming this review you will have{" "}
-          <span className="text-red-700">5</span> days to complete the review
+          <span className="text-red-700">7</span> days to complete the review
           process. Are you ready to claim this review? Your dedicated time and
           effort is appreciated.
         </p>
