@@ -37,6 +37,10 @@ function ControlPanel(props: any) {
     setEndYear(e.target.value);
   };
 
+  const reverseCoordinates = (coordinates: any) => {
+    return coordinates.map((polygon: any) => polygon.reverse());
+  };
+
   const handleSubmit = async () => {
     setError("");
 
@@ -52,8 +56,10 @@ function ControlPanel(props: any) {
             NAME: name,
           },
           geometry: {
-            coordinates: props.polygons[0]?.geometry.coordinates, // Assuming polygons have a 'coordinates' property
-            type: props.polygons[0]?.geometry.type, // Assuming polygons have a 'type' property
+            coordinates: [
+              reverseCoordinates(props.polygons[0]?.geometry.coordinates || []),
+            ], // Assuming polygons have a 'coordinates' property
+            type: "MultiPolygon", // Assuming polygons have a 'type' property
           },
         },
       };
