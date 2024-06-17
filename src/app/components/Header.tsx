@@ -60,19 +60,7 @@ const Header = () => {
         </button>
       </div>
       <div className="basis-1/3 flex item-center gap-2 justify-end">
-        {curUser && (
-          <div className="pt-1">
-            <div
-              onClick={() => setDisplayNotification(!displayNotification)}
-              className="w-6 h-6 ml-auto relative"
-            >
-              <Image fill alt="notification list icon" src={notificationIcon} />
-            </div>
-            {displayNotification && (
-              <Notification setConfirm={setDisplayNotification} />
-            )}
-          </div>
-        )}
+        {curUser && <Notification setConfirm={setDisplayNotification} />}
 
         {curUser ? (
           <div onClick={() => {}} className="cursor-pointer pt-1">
