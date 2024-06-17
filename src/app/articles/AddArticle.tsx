@@ -14,6 +14,8 @@ import { Toast } from "primereact/toast";
 import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next-nprogress-bar";
+import { stat } from "fs";
+import { use } from "chai";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -28,6 +30,7 @@ const CreateArticle = () => {
   const { state, dispatch } = articleContext;
   const [loading, setLoading] = useState(false);
   const toast = useRef<Toast>(null);
+  const [image, setImage] = useState<string>("");
 
   const showSuccess = () => {
     toast.current?.show({
@@ -50,6 +53,9 @@ const CreateArticle = () => {
     });
   };
 
+  useEffect(() => {
+    dispatch({ type: "RESET" });
+  }, []);
   const handleStartYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     dispatch({
@@ -98,13 +104,28 @@ const CreateArticle = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         if (e.target?.result) {
-          dispatch({
-            type: "SET_IMAGE_URL",
-            payload: e.target.result.toString(),
-          });
+          setImage(e.target.result as string);
         }
       };
       reader.readAsDataURL(image);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (!image) return;
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: image }),
+      });
+      const data = await response.json();
+      return data.url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
     }
   };
 
@@ -139,7 +160,13 @@ const CreateArticle = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
+
     try {
+      const imageUrl = await handleImageUpload(); // Wait for the image upload to finish
+      if (!imageUrl) return;
+      dispatch({ type: "SET_IMAGE_URL", payload: imageUrl });
+      console.log(imageUrl);
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/histories`,
         {
@@ -148,6 +175,9 @@ const CreateArticle = () => {
           country: state.country,
           categories: state.categories,
           sources: state.sources,
+          start_year: state.startYear,
+          end_year: state.endYear,
+          image_url: imageUrl,
         },
         {
           headers: {
@@ -155,6 +185,7 @@ const CreateArticle = () => {
           },
         }
       );
+
       setLoading(false);
       showSuccess();
       router.push("/globe");
@@ -162,7 +193,7 @@ const CreateArticle = () => {
     } catch (error: any) {
       setLoading(false);
       console.error(error);
-      showError(error.response.data.message);
+      showError(error.response?.data?.message || "An error occurred");
     }
   };
 
@@ -178,7 +209,7 @@ const CreateArticle = () => {
             htmlFor="fileInput"
             className="flex h-36 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
           >
-            {state.imageUrl === "" && (
+            {image === "" && (
               <div className="flex flex-col items-center justify-center pb-6 pt-5">
                 <svg
                   className="mb-4 h-8 w-8 text-gray-500 dark:text-gray-400"
@@ -203,10 +234,10 @@ const CreateArticle = () => {
                 </p>
               </div>
             )}
-            {state.imageUrl !== "" && (
+            {image !== "" && (
               <div className="flex w-full h-full px-16 py-1">
                 <Image
-                  src={state.imageUrl}
+                  src={image}
                   width={100}
                   height={200}
                   alt=""

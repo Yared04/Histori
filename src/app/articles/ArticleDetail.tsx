@@ -100,7 +100,7 @@ const ArticleDetail = ({ event, startYear, endYear }: ArticleDetailProps) => {
           alt="Picture of the article"
           width={100}
           height={100}
-          className="w-[100%] lg:h-48 md:h-36 h-20 mx-auto object-cover rounded-md mb-1"
+          className="w-[100%] lg:h-48 md:h-36 h-20 mx-auto object-contain rounded-md mb-1"
         />
       )}
       <div className="sticky top-0 z-10">
