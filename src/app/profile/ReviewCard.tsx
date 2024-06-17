@@ -14,7 +14,7 @@ const ReviewCard: React.FC<ReviewCardProps> = (props) => {
   const router = useRouter();
   const handleClick = () => {
     if (props.status === "pending") {
-      router.push(`/reviews/${props.id}`);
+      router.push(`/reviews/article/${props.id}`);
     }
   };
   return (

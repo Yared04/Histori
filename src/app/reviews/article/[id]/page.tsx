@@ -1,5 +1,5 @@
 "use client";
-import { Button, TextInput } from "flowbite-react";
+import { Button, Spinner, TextInput } from "flowbite-react";
 import React, {
   ChangeEvent,
   useContext,
@@ -18,6 +18,7 @@ import Footer from "@/app/components/Footer";
 import Starfield from "react-starfield";
 import { Toast } from "primereact/toast";
 import { useRouter } from "next-nprogress-bar";
+import { set } from "date-fns";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
@@ -32,6 +33,8 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
   const { state, dispatch } = articleContext;
   const [review, setReview] = useState<any>(null);
   const [report, setReport] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [loading1, setLoading1] = useState(false);
   const toast = useRef<Toast>(null);
 
   const showSuccess1 = () => {
@@ -133,7 +136,8 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
       });
       dispatch({
         type: "SET_END_YEAR",
-        payload: review.temp_history_id?.end_year ?? review.content_id?.end_year,
+        payload:
+          review.temp_history_id?.end_year ?? review.content_id?.end_year,
       });
     }
   }, [review, dispatch]);
@@ -226,6 +230,7 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
   ];
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/submit/${review._id}`,
@@ -244,15 +249,18 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           },
         }
       );
+      setLoading(false);
       showSuccess2();
       router.push("/profile");
     } catch (error: any) {
+      setLoading(false);
       console.error("Error in handleSubmit:", error);
       showError(error.response.data.message);
     }
   };
 
   const handleSave = async () => {
+    setLoading1(true);
     try {
       const response2 = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/reviews/history/save/${review._id}`,
@@ -271,8 +279,10 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           },
         }
       );
-      showSuccess1();      
+      setLoading1(false);
+      showSuccess1();
     } catch (error: any) {
+      setLoading1(false);
       showError(error.response.data.message);
       console.error("Error in handleSave:", error);
     }
@@ -425,10 +435,24 @@ const GiveReview = ({ params }: { params: { id: string } }) => {
           </div>
           <div className="flex justify-end gap-5 z-10">
             <Button onClick={handleSave} color="warning">
-              Save Progress
-            </Button>{" "}
+              {loading1 ? (
+                <>
+                  <Spinner size="sm" aria-label="Logging in..." />
+                  <span className="ms-2">Saving...</span>
+                </>
+              ) : (
+                "Save Progress"
+              )}
+            </Button>
             <Button onClick={handleSubmit} color="blue">
-              Submit
+              {loading ? (
+                <>
+                  <Spinner size="sm" aria-label="Logging in..." />
+                  <span className="ms-2">Submitting...</span>
+                </>
+              ) : (
+                "Submit"
+              )}
             </Button>
           </div>
         </div>

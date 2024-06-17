@@ -1,6 +1,12 @@
 "use client";
-import { Button, TextInput } from "flowbite-react";
-import React, { ChangeEvent, useContext, useEffect, useRef, useState } from "react";
+import { Button, Spinner, TextInput } from "flowbite-react";
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 import { ArticleContext } from "./ArticleContext";
@@ -20,6 +26,7 @@ const CreateArticle = () => {
     throw new Error("ArticleContext must be used within an ArticleProvider");
   }
   const { state, dispatch } = articleContext;
+  const [loading, setLoading] = useState(false);
   const toast = useRef<Toast>(null);
 
   const showSuccess = () => {
@@ -35,11 +42,13 @@ const CreateArticle = () => {
     toast.current?.show({
       severity: "error",
       summary: "Error",
-      detail: detail === "Server Error" ? "There are some problems in the data" : detail,
+      detail:
+        detail === "Server Error"
+          ? "There are some problems in the data"
+          : detail,
       life: 2000,
     });
   };
-
 
   const handleStartYearChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -129,6 +138,7 @@ const CreateArticle = () => {
   ];
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/histories`,
@@ -145,10 +155,12 @@ const CreateArticle = () => {
           },
         }
       );
-      showSuccess();   
-      router.push("/profile");
-      dispatch({ type: "RESET" });   
+      setLoading(false);
+      showSuccess();
+      router.push("/globe");
+      dispatch({ type: "RESET" });
     } catch (error: any) {
+      setLoading(false);
       console.error(error);
       showError(error.response.data.message);
     }
@@ -294,7 +306,14 @@ const CreateArticle = () => {
         </div>
         <div className="flex justify-end gap-5 z-10">
           <Button onClick={handleSubmit} color="blue">
-            Submit
+            {loading ? (
+              <>
+                <Spinner size="sm" aria-label="Logging in..." />
+                <span className="ms-2">Submitting...</span>
+              </>
+            ) : (
+              "Submit"
+            )}
           </Button>
         </div>
       </div>
