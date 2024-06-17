@@ -1,9 +1,10 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import ClaimReviewPopup from "./ClaimReviewPopup";
 import axios from "axios";
 import { useRouter } from "next-nprogress-bar";
 import { Toast } from "primereact/toast";
+import { ArticleContext } from "../articles/ArticleContext";
 
 interface ProfileCardProps {
   title: string;
@@ -17,6 +18,14 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
   const [popDisplay, setPopDisplay] = useState(false);
   const date = new Date(props.date);
   const toast = useRef<Toast>(null);
+  const articleContext = useContext(ArticleContext);
+  if (!articleContext) {
+    throw new Error("ArticleContext must be used within an ArticleProvider");
+  }
+  const { state } = articleContext;
+
+  const type = state.history ? "article" : "map";
+
 
   const showSuccess = () => {
     toast.current?.show({
@@ -47,8 +56,9 @@ const ProfileCard: React.FC<ProfileCardProps> = (props) => {
           },
         }
       );
+      console.log(type)
       const reviewId = response.data.data._id
-      router.push(`/reviews/article/${reviewId}`);
+      router.push(`/reviews/${type}/${reviewId}`);
       showSuccess();
     } catch (error: any) {
       console.log(error);

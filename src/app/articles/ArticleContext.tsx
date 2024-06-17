@@ -1,7 +1,9 @@
+import { tr } from "date-fns/locale";
 import React, { createContext, useReducer, ReactNode, useContext } from "react";
 
 interface ArticleContextType {
   imageUrl: string;
+  history: boolean;
   title: string;
   content: string;
   country: string;
@@ -20,6 +22,7 @@ const initialArticleState: ArticleContextType = {
   endYear: undefined,
   sources: [],
   categories: [],
+  history: true
 };
 
 
@@ -32,7 +35,8 @@ type ArticleActionType =
   | { type: "SET_END_YEAR"; payload: number | undefined}
   | { type: "SET_SOURCES"; payload: string[] }
   | { type: "SET_CATEGORIES"; payload: string[] }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "HISTORY"; payload: boolean}; 
 
 const articleReducer = (
   state: ArticleContextType,
@@ -57,6 +61,8 @@ const articleReducer = (
       return { ...state, categories: action.payload };
     case "RESET":
       return initialArticleState;
+    case "HISTORY":
+      return {...state, history: action.payload};
     default:
       return state;
   }
