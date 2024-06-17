@@ -1,5 +1,4 @@
 // app/api/upload/route.js
-import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -15,19 +14,13 @@ export async function POST(request: any) {
       folder: "/Histori",
       use_filename: true,
     });
-    return NextResponse.json({ url: uploadResponse.secure_url });
+    return new Response(JSON.stringify({ url: uploadResponse.secure_url }), {
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong!" },
-      { status: 500 }
-    );
+    return new Response(JSON.stringify({ error: "Something went wrong!" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "10mb", // Adjust the limit as needed
-    },
-  },
-};
