@@ -29,9 +29,13 @@ const ReferenceImage: React.FC<ReferenceImageProps> = ({
 
   return (
     image && (
-      <div className="absolute left-[50%] top-[50%] w-48 h-48">
+      <div
+        className={`absolute left-[50%] top-[50%] w-48 h-48 ${
+          isLocked ? "pointer-events-none" : ""
+        }`}
+      >
         <PositionableContainer
-          className={`container ${isLocked ? "pointer-events-none" : ""}`}
+          className={`container `}
           movable={!isLocked}
           resizable={!isLocked}
           rotatable={!isLocked}

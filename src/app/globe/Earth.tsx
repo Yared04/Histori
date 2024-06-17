@@ -11,7 +11,6 @@ import Globe from "react-globe.gl";
 import TimelineContext from "./timeline/TimelineContext";
 import Loading from "../components/Loading";
 
-
 // Debounce function
 export const useDebouncedValue = (inputValue: any, delay: any) => {
   const [debouncedValue, setDebouncedValue] = useState(inputValue);
@@ -51,13 +50,13 @@ const Earth = () => {
     startYearTransition(async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/map/temp?period=${year}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/map?period=${year}`
         );
         if (!response.ok) {
           return;
         }
         const data = await response.json();
-        setData!(data.map.features);
+        setData!(data.features);
       } catch (error) {
         console.error("Error fetching GeoJSON data:", error);
       }
