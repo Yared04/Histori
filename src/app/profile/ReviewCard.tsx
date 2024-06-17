@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next-nprogress-bar";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { ArticleContext } from "../articles/ArticleContext";
 
 interface ReviewCardProps {
   title: string;
@@ -12,9 +13,17 @@ interface ReviewCardProps {
 const ReviewCard: React.FC<ReviewCardProps> = (props) => {
   const dueDate = new Date(props.dueDate);
   const router = useRouter();
+  const articleContext = useContext(ArticleContext);
+  if (!articleContext) {
+    throw new Error("ArticleContext must be used within an ArticleProvider");
+  }
+  const { state } = articleContext;
+
+  const type = state.history ? "article" : "map";
   const handleClick = () => {
+    console.log(type)
     if (props.status === "pending") {
-      router.push(`/reviews/${props.id}`);
+      router.push(`/reviews/${type}/${props.id}`);
     }
   };
   return (

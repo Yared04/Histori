@@ -54,13 +54,15 @@ const Header = () => {
             Contribute Map
           </button>
         )}
-        <button
-          onClick={() => {
-            router.push("/guessFlag");
-          }}
-        >
-          Guess Flag
-        </button>
+        {curUser !== null && (
+          <button
+            onClick={() => {
+              router.push("/guessFlag");
+            }}
+          >
+            Guess Flag
+          </button>
+        )}
       </div>
       <div className="basis-1/3 flex item-center gap-2 justify-end">
         {curUser && (

@@ -9,8 +9,14 @@ import { useRouter } from "next-nprogress-bar";
 import { Avatar, Tabs, TabsRef } from "flowbite-react";
 import ReviewCard from "./ReviewCard";
 import { TbSwitchHorizontal } from "react-icons/tb";
+import { ArticleContext } from "../articles/ArticleContext";
 
 const Profile = () => {
+  const articleContext = useContext(ArticleContext);
+  if (!articleContext) {
+    throw new Error("ArticleContext must be used within an ArticleProvider");
+  }
+  const { state, dispatch } = articleContext;
   const { curUser, setCurUser } = useContext(userContext);
   const [reports, setReports] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -18,8 +24,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [myDraft, setMyDraft] = useState(false);
   const tabsRef = useRef<TabsRef>(null);
-  const [history, setHistory] = useState(true);
-  const type = history ? "History" : "Map";
+  const type = state.history ? "History" : "Map";
 
 
   const hanldeBecomeContributor = async () => {
@@ -42,6 +47,11 @@ const Profile = () => {
     }
     setLoading(false);
   };
+
+  const handleHistoryToggle = () => {
+    dispatch({ type: "HISTORY", payload: !state.history });
+  }
+
 
   const fetchReviews = async () => {
     setLoading(true);
@@ -81,7 +91,7 @@ const Profile = () => {
     if (curUser?.role === "contributor") {
       fetchReviews();
     }
-  }, [curUser, myDraft, history]);
+  }, [curUser, myDraft, state.history]);
   return (
     curUser && (
       <ClientComponent>
@@ -179,13 +189,13 @@ const Profile = () => {
             {/* Toggle button between histroy and article */}
             <div className="flex gap-2">
               <button
-                onClick={() => setHistory(!history)}
+                onClick={handleHistoryToggle}
                 className={`${
-                  history ? "bg-blue-500 text-white" : "bg-gray-300"
+                  state.history ? "bg-blue-500 text-white" : "bg-gray-300"
                 } px-2 py-1 rounded-md`}
               >
                 <span className="flex gap-1">
-                {history ? "Article" : "Map"}
+                {state.history ? "Article" : "Map"}
                 <TbSwitchHorizontal className="self-center mt-0.5" /></span>
               </button>
             </div>

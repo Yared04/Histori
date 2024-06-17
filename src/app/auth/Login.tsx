@@ -15,7 +15,6 @@ const Login = () => {
     values: { email: any; password: any },
     { setSubmitting, setFieldError }: any
   ) => {
-    console.log("here");
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/users/login`,

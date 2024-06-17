@@ -5,7 +5,6 @@ import React, {
   Dispatch,
   SetStateAction,
 } from "react";
-import { useRouter } from "next-nprogress-bar";
 
 type ClaimReviewPopupProps = {
   setConfirm: Dispatch<SetStateAction<boolean>>;
@@ -16,7 +15,6 @@ const ClaimReviewPopup: React.FC<ClaimReviewPopupProps> = ({
   handleClaimReview,
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: any) => {
