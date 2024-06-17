@@ -13,6 +13,7 @@ interface ClientComponentProps {
 }
 
 const ClientComponent: React.FC<ClientComponentProps> = ({ children }) => {
+
   return (
     <div className="flex flex-col bg-[url('/stars.png')]">
       <Header />
